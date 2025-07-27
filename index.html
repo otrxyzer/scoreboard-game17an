@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sport Scoreboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="gradient-bg min-h-screen text-white overflow-x-hidden">
+    <!-- Container untuk Slideshow Pemenang -->
+    <div id="winnerSlideshow" class="slideshow-container"></div>
+
+    <div class="p-4 max-w-7xl mx-auto relative z-10">
+
+        <!-- Header Section -->
+        <header class="glass-effect rounded-lg p-4 mb-4 text-center">
+            <h1 class="scoreboard-font text-2xl sm:text-3xl font-black text-cyan-300 mb-2" id="matchTitle">CHAMPIONSHIP LEAGUE</h1>
+            <p class="sporty-font text-base sm:text-lg text-gray-300" id="sportName">BASKETBALL TOURNAMENT</p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 mt-2 text-xs sm:text-sm text-gray-400">
+                <span id="matchTimestamp">📅 DEC 15, 2024 • 7:30 PM</span>
+                <span class="hidden sm:inline">•</span>
+                <span>🏟️ <span id="venueInfo">ARENA CENTER</span></span>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+            <!-- Left Side - Main Scoreboard -->
+            <div class="lg:col-span-8 flex flex-col gap-4">
+                <!-- ... (Isi Scoreboard tidak berubah) ... -->
+                 <div class="glass-effect rounded-lg p-4 sm:p-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 items-center mb-4"><div class="team-card rounded-lg p-4 text-center order-2 sm:order-1"><div class="flex items-center justify-center gap-2 mb-2"><span class="text-2xl" id="teamAFlag">🇺🇸</span><h3 class="sporty-font text-lg sm:text-xl font-bold text-cyan-300" id="teamAName">TEAM ALPHA</h3></div><div class="score-display rounded-lg p-3"><span class="scoreboard-font text-3xl font-black text-green-400" id="teamAWins">0</span></div><p class="sporty-font text-sm text-gray-300 mt-1">WINS</p><p class="sporty-font text-xs text-gray-400 mt-1" id="teamAPlayer">PLAYER: JOHN DOE</p></div><div class="sm:col-span-3 text-center order-1 sm:order-2"><div class="glass-effect rounded-lg p-4"><h2 class="sporty-font text-xl sm:text-2xl font-bold text-yellow-400 mb-2" id="matchRound">ROUND 1</h2><p class="sporty-font text-base sm:text-lg text-cyan-300" id="matchSubtitle">SEMI-FINAL</p><p class="sporty-font text-sm text-gray-400 mt-1"><span id="totalRoundsDisplay">5 ROUNDS</span> • <span id="venueDisplay">ARENA CENTER</span></p></div></div><div class="team-card rounded-lg p-4 text-center order-3 sm:order-3"><div class="flex items-center justify-center gap-2 mb-2"><span class="text-2xl" id="teamBFlag">🇬🇧</span><h3 class="sporty-font text-lg sm:text-xl font-bold text-cyan-300" id="teamBName">TEAM BETA</h3></div><div class="score-display rounded-lg p-3"><span class="scoreboard-font text-3xl font-black text-green-400" id="teamBWins">0</span></div><p class="sporty-font text-sm text-gray-300 mt-1">WINS</p><p class="sporty-font text-xs text-gray-400 mt-1" id="teamBPlayer">PLAYER: JANE SMITH</p></div></div>
+                    <div class="grid grid-cols-5 gap-4 items-center mt-2">
+                        <div class="col-span-2"><div class="score-display rounded-lg p-4 sm:p-8 text-center neon-glow" id="teamAScoreWrapper"><span class="scoreboard-font text-6xl sm:text-8xl font-black text-cyan-400" id="teamAScore">0</span><div class="flex gap-2 justify-center mt-4"><button onclick="updateScore('A', 5)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all">+5</button><button onclick="updateScore('A', 10)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all">+10</button></div></div></div>
+                        <div class="text-center"><div class="glass-effect rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto pulse-animation"><span class="sporty-font text-xl sm:text-2xl font-bold text-red-400">VS</span></div></div>
+                        <div class="col-span-2"><div class="score-display rounded-lg p-4 sm:p-8 text-center neon-glow" id="teamBScoreWrapper"><span class="scoreboard-font text-6xl sm:text-8xl font-black text-cyan-400" id="teamBScore">0</span><div class="flex gap-2 justify-center mt-4"><button onclick="updateScore('B', 5)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all">+5</button><button onclick="updateScore('B', 10)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all">+10</button></div></div></div>
+                    </div>
+                </div>
+                <div class="glass-effect rounded-lg p-4">
+                    <h3 class="sporty-font text-lg font-bold text-yellow-400 mb-2">MATCH HIGHLIGHTS</h3>
+                    <div class="bg-black bg-opacity-50 rounded p-3 overflow-hidden"><div class="running-text sporty-font text-cyan-300 whitespace-nowrap"><span id="highlightText">🏆 Welcome to the match! Get ready for an exciting game! • Good luck to both teams!</span></div></div>
+                    <div class="mt-3 flex flex-col sm:flex-row gap-2"><input type="text" id="newHighlight" placeholder="Enter new highlight..." class="flex-1 bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font text-sm"><button onclick="updateHighlight()" class="glass-effect px-4 py-2 rounded sporty-font text-sm font-bold text-cyan-400 hover:bg-cyan-600 hover:bg-opacity-30 transition-all">Update</button></div>
+                </div>
+            </div>
+
+            <!-- Right Side - Timer and Sponsors -->
+            <div class="lg:col-span-4 flex flex-col gap-4">
+                <!-- Primary Sponsor Section -->
+                <div class="glass-effect rounded-lg p-4 text-center">
+                    <h4 class="sporty-font text-lg font-bold text-yellow-400 mb-2">PRIMARY SPONSOR</h4>
+                    <div class="p-2 bg-black bg-opacity-20 rounded-lg">
+                        <img src="https://via.placeholder.com/250x100/0f172a/FFFFFF/?text=YOUR+SPONSOR" alt="Sponsor Logo" class="mx-auto rounded-md opacity-75 hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
+                
+                <!-- Timer Section - Made to grow to fill space -->
+                <div class="glass-effect rounded-lg p-4 flex-grow flex flex-col">
+                    <h3 class="sporty-font text-xl font-bold text-yellow-400 mb-4 text-center">GAME TIMER</h3>
+                    <div class="score-display rounded-lg p-4 text-center mb-4"><span class="scoreboard-font text-4xl font-black text-red-400" id="timerDisplay">15:00</span></div>
+                    <div class="grid grid-cols-3 gap-2 mb-4"><button onclick="startTimer()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all">START</button><button onclick="pauseTimer()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-yellow-400 hover:bg-yellow-600 hover:bg-opacity-30 transition-all">PAUSE</button><button onclick="resetTimer()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-red-400 hover:bg-red-600 hover:bg-opacity-30 transition-all">RESET</button></div>
+                    <div class="grid grid-cols-2 gap-2 mb-4"><input type="number" id="minutes" placeholder="Min" min="0" max="99" class="bg-black bg-opacity-50 px-2 py-1 rounded text-white scoreboard-font text-center"><input type="number" id="seconds" placeholder="Sec" min="0" max="59" class="bg-black bg-opacity-50 px-2 py-1 rounded text-white scoreboard-font text-center"></div>
+                    <button onclick="setTime()" class="w-full glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-400 hover:bg-cyan-600 hover:bg-opacity-30 transition-all">SET TIME</button>
+                </div>
+                
+                <!-- Co-Sponsor Section -->
+                <div class="glass-effect rounded-lg p-4 text-center">
+                    <h4 class="sporty-font text-lg font-bold text-yellow-400 mb-2">CO-SPONSOR</h4>
+                    <div class="p-2 bg-black bg-opacity-20 rounded-lg">
+                        <img src="https://via.placeholder.com/250x100/1e293b/FFFFFF/?text=CO-SPONSOR" alt="Co-Sponsor Logo" class="mx-auto rounded-md opacity-75 hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Lower Area - Fixtures and Standings (Reverted) -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+            <div class="glass-effect rounded-lg p-4 flex flex-col">
+                <h3 class="sporty-font text-lg font-bold text-blue-400 mb-3 text-center">📅 UPCOMING FIXTURES</h3>
+                <div id="upcomingFixtures" class="space-y-2 flex-grow"></div>
+            </div>
+            <div class="glass-effect rounded-lg p-4 flex flex-col">
+                <h3 class="sporty-font text-lg font-bold text-yellow-400 mb-3 text-center">🏆 LEAGUE STANDINGS</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-cyan-600 border-opacity-30">
+                                <th class="sporty-font text-xs text-gray-400 text-left py-1">#</th>
+                                <th class="sporty-font text-xs text-gray-400 text-left py-1">TEAM</th>
+                                <th class="sporty-font text-xs text-gray-400 text-center py-1">W</th>
+                                <th class="sporty-font text-xs text-gray-400 text-center py-1">L</th>
+                                <th class="sporty-font text-xs text-gray-400 text-center py-1">PTS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leagueStandings">
+                           <!-- Standings will be dynamically inserted here by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Menu -->
+        <footer class="glass-effect rounded-lg p-4 mt-4">
+             <!-- ... (Footer tidak berubah) ... -->
+             <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+                <button onclick="showScoreboardSettings()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all text-sm">⚙️ SCOREBOARD</button>
+                <button onclick="showGameSettings()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-sm">🎮 GAME</button>
+                <button onclick="showFixtureSchedule()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-blue-400 hover:bg-blue-600 hover:bg-opacity-30 transition-all text-sm">📅 FIXTURE</button>
+                <button onclick="showRegisterLogin()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-pink-400 hover:bg-pink-600 hover:bg-opacity-30 transition-all text-sm">👤 USER</button>
+                <button onclick="showSection('standings')" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-sm">🏆 STANDINGS</button>
+                <button onclick="showSection('stats')" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-sm">📊 STATS</button>
+                <button onclick="saveFixture()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all text-sm">💾 SAVE</button>
+                <button onclick="toggleFullscreen()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-purple-400 hover:bg-purple-600 hover:bg-opacity-30 transition-all text-sm">🖥️ FULLSCREEN</button>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

@@ -19,19 +19,27 @@ document.addEventListener('DOMContentLoaded', () => {
     window.resetTimer = () => { pauseTimer(); currentTime = 15 * 60; updateTimerDisplay(); };
     window.setTime = () => { const m = parseInt(document.getElementById('minutes').value) || 0; const s = parseInt(document.getElementById('seconds').value) || 0; currentTime = (m * 60) + s; updateTimerDisplay(); document.getElementById('minutes').value = ''; document.getElementById('seconds').value = ''; };
 
-    window.updateScore = (team, change) => {
+    function updateScore(team, change) {
         const scoreElement = document.getElementById(team === 'A' ? 'teamAScore' : 'teamBScore');
-        scoreElement.textContent = Math.max(0, parseInt(scoreElement.textContent) + change);
-        if (parseInt(scoreElement.textContent) >= scoreboardSettings.maxScore) {
-            const winsElement = document.getElementById(team === 'A' ? 'teamAWins' : 'teamBWins');
-            winsElement.textContent = parseInt(winsElement.textContent) + 1;
-            document.getElementById('teamAScore').textContent = '0';
-            document.getElementById('teamBScore').textContent = '0';
-            checkGameWinCondition(team);
-        }
+        const newScore = Math.max(0, parseInt(scoreElement.textContent) + change);
+        scoreElement.textContent = newScore;
+        if (newScore >= scoreboardSettings.maxScore) { winRound(team); }
         triggerHapticFeedback();
+    }
+    
+    window.updateScoreByButton = (team, change, event) => {
+        event.stopPropagation();
+        updateScore(team, change);
     };
 
+    function winRound(winningTeam) {
+        const winsElement = document.getElementById(winningTeam === 'A' ? 'teamAWins' : 'teamBWins');
+        winsElement.textContent = parseInt(winsElement.textContent) + 1;
+        document.getElementById('teamAScore').textContent = '0';
+        document.getElementById('teamBScore').textContent = '0';
+        checkGameWinCondition(winningTeam);
+    }
+    
     function checkGameWinCondition(roundWinnerTeam) {
         const teamAWins = parseInt(document.getElementById('teamAWins').textContent);
         const teamBWins = parseInt(document.getElementById('teamBWins').textContent);
@@ -55,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.resetGameNow = () => { closeModal(); resetAllScores(); };
-
     function resetAllScores() {
         stopWinnerSlideshow();
         ['teamAScore', 'teamBScore', 'teamAWins', 'teamBWins'].forEach(id => document.getElementById(id).textContent = '0');
@@ -65,34 +72,53 @@ document.addEventListener('DOMContentLoaded', () => {
     function startWinnerSlideshow() {
         const container = document.getElementById('winnerSlideshow'); container.innerHTML = '';
         winnerImages.forEach((src, i) => { const slide = document.createElement('div'); slide.className = 'slideshow-image'; slide.style.backgroundImage = `url(${src})`; if (i === 0) slide.classList.add('visible'); container.appendChild(slide); });
-        container.classList.add('active');
-        let currentIndex = 0;
+        container.classList.add('active'); let currentIndex = 0;
         slideshowInterval = setInterval(() => { const slides = container.children; slides[currentIndex].classList.remove('visible'); currentIndex = (currentIndex + 1) % slides.length; slides[currentIndex].classList.add('visible'); }, 5000);
     }
-
     function stopWinnerSlideshow() { clearInterval(slideshowInterval); document.getElementById('winnerSlideshow').classList.remove('active'); }
 
-    // --- MODALS ---
-    window.showScoreboardSettings = () => { const h = `<div class="glass-effect rounded-lg p-6 max-w-md w-full"><h2 class="sporty-font text-2xl font-bold text-orange-400 mb-4 text-center">⚙️ SCOREBOARD SETTINGS</h2><div class="space-y-4"><div><label class="sporty-font text-sm text-gray-300">Max Score (Target per Round):</label><input type="number" id="settingsMaxScore" value="${scoreboardSettings.maxScore}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white scoreboard-font"></div><div><label class="sporty-font text-sm text-gray-300">Total Rounds to Play:</label><input type="number" id="settingsTotalRounds" value="${scoreboardSettings.totalRounds}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white scoreboard-font"></div></div><div class="flex gap-3 mt-6"><button onclick="applyScoreboardSettings()" class="flex-1 glass-effect px-4 py-2 rounded sporty-font font-bold text-green-400 hover:bg-green-600">APPLY</button><button onclick="closeModal()" class="flex-1 glass-effect px-4 py-2 rounded sporty-font font-bold text-red-400 hover:bg-red-600">CANCEL</button></div></div>`; createModal(h); };
-    window.applyScoreboardSettings = () => { scoreboardSettings.maxScore = parseInt(document.getElementById('settingsMaxScore').value) || 100; scoreboardSettings.totalRounds = parseInt(document.getElementById('settingsTotalRounds').value) || 5; document.getElementById('totalRoundsDisplay').textContent = `${scoreboardSettings.totalRounds} ROUNDS`; closeModal(); showNotification('Scoreboard settings applied!', 'success'); };
-    window.showGameSettings = () => { const h = `<div class="glass-effect rounded-lg p-6 max-w-lg w-full overflow-y-auto max-h-[90vh]"><h2 class="sporty-font text-2xl font-bold text-cyan-400 mb-6 text-center">🎮 GAME SETTINGS</h2><div class="space-y-4"><div><label class="sporty-font text-sm text-gray-300">Match Title:</label><input type="text" id="settingsMatchTitle" value="${gameSettings.matchTitle}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div><div><label class="sporty-font text-sm text-gray-300">Sport/Event Name:</label><input type="text" id="settingsSportName" value="${gameSettings.sportName}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="sporty-font text-sm text-gray-300">Venue:</label><input type="text" id="settingsVenue" value="${gameSettings.venue}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div><div><label class="sporty-font text-sm text-gray-300">Timestamp:</label><input type="text" id="settingsTimestamp" value="${gameSettings.timestamp}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div></div><hr class="border-cyan-700 my-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="sporty-font text-sm text-gray-300">Team A Name:</label><input type="text" id="settingsTeamAName" value="${gameSettings.teamAName}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div><div><label class="sporty-font text-sm text-gray-300">Team A Player:</label><input type="text" id="settingsTeamAPlayer" value="${gameSettings.teamAPlayer}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="sporty-font text-sm text-gray-300">Team B Name:</label><input type="text" id="settingsTeamBName" value="${gameSettings.teamBName}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div><div><label class="sporty-font text-sm text-gray-300">Team B Player:</label><input type="text" id="settingsTeamBPlayer" value="${gameSettings.teamBPlayer}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div></div></div><div class="flex gap-3 mt-8"><button onclick="applyGameSettings()" class="flex-1 glass-effect px-4 py-2 rounded sporty-font font-bold text-green-400 hover:bg-green-600">APPLY</button><button onclick="closeModal()" class="flex-1 glass-effect px-4 py-2 rounded sporty-font font-bold text-red-400 hover:bg-red-600">CANCEL</button></div></div>`; createModal(h); };
-    window.applyGameSettings = () => { Object.assign(gameSettings, { matchTitle: document.getElementById('settingsMatchTitle').value, sportName: document.getElementById('settingsSportName').value, venue: document.getElementById('settingsVenue').value, timestamp: document.getElementById('settingsTimestamp').value, teamAName: document.getElementById('settingsTeamAName').value, teamAPlayer: document.getElementById('settingsTeamAPlayer').value, teamBName: document.getElementById('settingsTeamBName').value, teamBPlayer: document.getElementById('settingsTeamBPlayer').value }); document.getElementById('matchTitle').textContent = gameSettings.matchTitle; document.getElementById('sportName').textContent = gameSettings.sportName; document.getElementById('venueInfo').textContent = gameSettings.venue; document.getElementById('venueDisplay').textContent = gameSettings.venue; document.getElementById('matchTimestamp').textContent = `📅 ${gameSettings.timestamp}`; document.getElementById('teamAName').textContent = gameSettings.teamAName; document.getElementById('teamAPlayer').textContent = `PLAYER: ${gameSettings.teamAPlayer}`; document.getElementById('teamBName').textContent = gameSettings.teamBName; document.getElementById('teamBPlayer').textContent = `PLAYER: ${gameSettings.teamBPlayer}`; closeModal(); showNotification('Game settings applied!', 'success'); };
+    // --- MODALS (DIKEMBALIKAN KE VERSI LENGKAP) ---
+    window.showScoreboardSettings = () => {
+        const h = `<div class="glass-effect rounded-lg p-6 max-w-md w-full"><h2 class="sporty-font text-2xl font-bold text-orange-400 mb-4 text-center">⚙️ SCOREBOARD SETTINGS</h2><div class="space-y-4"><div><label class="sporty-font text-sm text-gray-300">Max Score (Target per Round):</label><input type="number" id="settingsMaxScore" value="${scoreboardSettings.maxScore}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white scoreboard-font"></div><div><label class="sporty-font text-sm text-gray-300">Total Rounds to Play:</label><input type="number" id="settingsTotalRounds" value="${scoreboardSettings.totalRounds}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white scoreboard-font"></div></div><div class="flex gap-3 mt-6"><button onclick="applyScoreboardSettings()" class="flex-1 glass-effect px-4 py-2 rounded sporty-font font-bold text-green-400 hover:bg-green-600">APPLY</button><button onclick="closeModal()" class="flex-1 glass-effect px-4 py-2 rounded sporty-font font-bold text-red-400 hover:bg-red-600">CANCEL</button></div></div>`;
+        createModal(h);
+    };
+    window.applyScoreboardSettings = () => {
+        scoreboardSettings.maxScore = parseInt(document.getElementById('settingsMaxScore').value) || 100;
+        scoreboardSettings.totalRounds = parseInt(document.getElementById('settingsTotalRounds').value) || 5;
+        document.getElementById('totalRoundsDisplay').textContent = `${scoreboardSettings.totalRounds} ROUNDS`;
+        closeModal();
+        showNotification('Scoreboard settings applied!', 'success');
+    };
+
+    window.showGameSettings = () => {
+        const h = `<div class="glass-effect rounded-lg p-6 max-w-lg w-full overflow-y-auto max-h-[90vh]"><h2 class="sporty-font text-2xl font-bold text-cyan-400 mb-6 text-center">🎮 GAME SETTINGS</h2><div class="space-y-4"><div><label class="sporty-font text-sm text-gray-300">Match Title:</label><input type="text" id="settingsMatchTitle" value="${gameSettings.matchTitle}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div><div><label class="sporty-font text-sm text-gray-300">Sport/Event Name:</label><input type="text" id="settingsSportName" value="${gameSettings.sportName}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="sporty-font text-sm text-gray-300">Venue:</label><input type="text" id="settingsVenue" value="${gameSettings.venue}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div><div><label class="sporty-font text-sm text-gray-300">Timestamp:</label><input type="text" id="settingsTimestamp" value="${gameSettings.timestamp}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div></div><hr class="border-cyan-700 my-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="sporty-font text-sm text-gray-300">Team A Name:</label><input type="text" id="settingsTeamAName" value="${gameSettings.teamAName}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div><div><label class="sporty-font text-sm text-gray-300">Team A Player:</label><input type="text" id="settingsTeamAPlayer" value="${gameSettings.teamAPlayer}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="sporty-font text-sm text-gray-300">Team B Name:</label><input type="text" id="settingsTeamBName" value="${gameSettings.teamBName}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div><div><label class="sporty-font text-sm text-gray-300">Team B Player:</label><input type="text" id="settingsTeamBPlayer" value="${gameSettings.teamBPlayer}" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div></div></div><div class="flex gap-3 mt-8"><button onclick="applyGameSettings()" class="flex-1 glass-effect px-4 py-2 rounded sporty-font font-bold text-green-400 hover:bg-green-600">APPLY</button><button onclick="closeModal()" class="flex-1 glass-effect px-4 py-2 rounded sporty-font font-bold text-red-400 hover:bg-red-600">CANCEL</button></div></div>`;
+        createModal(h);
+    };
+    window.applyGameSettings = () => {
+        Object.assign(gameSettings, { matchTitle: document.getElementById('settingsMatchTitle').value, sportName: document.getElementById('settingsSportName').value, venue: document.getElementById('settingsVenue').value, timestamp: document.getElementById('settingsTimestamp').value, teamAName: document.getElementById('settingsTeamAName').value, teamAPlayer: document.getElementById('settingsTeamAPlayer').value, teamBName: document.getElementById('settingsTeamBName').value, teamBPlayer: document.getElementById('settingsTeamBPlayer').value });
+        document.getElementById('matchTitle').textContent = gameSettings.matchTitle;
+        document.getElementById('sportName').textContent = gameSettings.sportName;
+        document.getElementById('venueDisplay').textContent = gameSettings.venue;
+        document.getElementById('teamAName').textContent = gameSettings.teamAName;
+        document.getElementById('teamAPlayer').textContent = `PLAYER: ${gameSettings.teamAPlayer}`;
+        document.getElementById('teamBName').textContent = gameSettings.teamBName;
+        document.getElementById('teamBPlayer').textContent = `PLAYER: ${gameSettings.teamBPlayer}`;
+        closeModal();
+        showNotification('Game settings applied!', 'success');
+    };
 
     // --- EVENT LISTENERS & INITIALIZATION ---
-    function setupSwipeListeners(team) {
+    function setupScoreTapZones(team) {
         const scoreWrapper = document.getElementById(`team${team}ScoreWrapper`);
-        let startX = 0; let deltaX = 0; const SWIPE_THRESHOLD = 50;
-        scoreWrapper.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; scoreWrapper.classList.add('swiping'); deltaX = 0; }, { passive: true });
-        scoreWrapper.addEventListener('touchmove', (e) => { deltaX = e.touches[0].clientX - startX; }, { passive: true });
-        scoreWrapper.addEventListener('touchend', () => {
-            if (deltaX > SWIPE_THRESHOLD) { updateScore(team, 1); } 
-            else if (deltaX < -SWIPE_THRESHOLD) { updateScore(team, -1); }
-            scoreWrapper.classList.remove('swiping');
+        scoreWrapper.addEventListener('click', (event) => {
+            const clickX = event.offsetX, elementWidth = scoreWrapper.offsetWidth;
+            if (clickX > elementWidth / 2) { updateScore(team, 1); } 
+            else { updateScore(team, -1); }
         });
     }
 
     function init() {
-        updateTimerDisplay(); setupSwipeListeners('A'); setupSwipeListeners('B');
+        updateTimerDisplay(); setupScoreTapZones('A'); setupScoreTapZones('B');
         const renderFixtures = () => { document.getElementById('upcomingFixtures').innerHTML = `<div class="bg-black bg-opacity-30 rounded p-3"><div class="flex justify-between items-center"><div class="sporty-font text-sm text-cyan-300">🇺🇸 ALPHA vs 🇨🇦 GAMMA</div><div class="sporty-font text-xs text-yellow-400">LIVE</div></div><div class="sporty-font text-xs text-gray-400 mt-1">DEC 16 • 8:00 PM</div></div>`; };
         const renderStandings = () => { document.getElementById('leagueStandings').innerHTML = demoStandings.map(s => `<tr class="hover:bg-black hover:bg-opacity-30 transition-all cursor-pointer"><td class="sporty-font text-yellow-400 py-1">${s.pos}</td><td class="sporty-font text-cyan-300 py-1">${s.team}</td><td class="sporty-font text-green-400 text-center py-1">${s.W}</td><td class="sporty-font text-red-400 text-center py-1">${s.L}</td><td class="sporty-font text-yellow-400 text-center py-1">${s.PTS}</td></tr>`).join(''); };
         renderFixtures(); renderStandings();

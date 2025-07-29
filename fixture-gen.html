@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixture Schedule Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hover-glow:hover {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="p-6">
+    <!-- Home Page Container -->
+    <div id="homePage" class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="glass-effect rounded-2xl p-8 mb-8 text-center">
+            <h1 class="text-4xl font-bold text-white mb-4">Sports Fixture Generator</h1>
+            <p class="text-white/80 text-lg">Create professional tournament and league schedules instantly</p>
+        </div>
+        
+        <!-- Mode Selection -->
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <button onclick="initializeMode('league')" class="glass-card rounded-2xl p-8 hover-glow transition-all duration-300 group">
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 glass-effect rounded-full flex items-center justify-center">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">League Mode</h3>
+                    <p class="text-white/70">Round-robin format where every team plays every other team</p>
+                </div>
+            </button>
+            
+            <button onclick="initializeMode('tournament')" class="glass-card rounded-2xl p-8 hover-glow transition-all duration-300 group">
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 glass-effect rounded-full flex items-center justify-center">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Tournament Mode</h3>
+                    <p class="text-white/70">Knockout elimination format with brackets and rounds</p>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Fixture Generator Interface -->
+    <div id="fixtureGenerator" class="max-w-6xl mx-auto hidden">
+        <!-- Header with Back Button -->
+        <div class="glass-effect rounded-2xl p-6 mb-8 flex items-center justify-between">
+            <button onclick="goHome()" class="glass-card rounded-xl px-6 py-3 text-white hover-glow transition-all duration-300 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Home
+            </button>
+            <h2 id="modeTitle" class="text-3xl font-bold text-white"></h2>
+            <div class="w-32"></div>
+        </div>
+
+        <!-- Tournament Information Section -->
+        <div class="glass-card rounded-2xl p-8 mb-8 animate-fade-in">
+            <h3 class="text-2xl font-semibold text-white mb-6">Tournament Information</h3>
+            
+            <!-- Tournament Name and Venue -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-white/80 text-sm font-medium mb-2">Tournament/League Name</label>
+                    <div class="relative">
+                        <input type="text" id="tournamentName" value="Championship 2024" 
+                               class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                        <button onclick="toggleEdit('tournamentName')" class="absolute right-3 top-3 text-white/60 hover:text-white">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-white/80 text-sm font-medium mb-2">Venue Name</label>
+                    <div class="relative">
+                        <input type="text" id="venueName" value="Sports Complex Arena" 
+                               class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                        <button onclick="toggleEdit('venueName')" class="absolute right-3 top-3 text-white/60 hover:text-white">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Classification Selection -->
+            <div class="mb-6">
+                <label class="block text-white/80 text-sm font-medium mb-3">Classification</label>
+                <div class="flex gap-4">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="classification" value="team" checked class="sr-only" onchange="updateClassification()">
+                        <div class="w-5 h-5 rounded-full border-2 border-white/40 mr-3 flex items-center justify-center classification-radio">
+                            <div class="w-2 h-2 rounded-full bg-white hidden"></div>
+                        </div>
+                        <span class="text-white">Team</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="classification" value="individual" class="sr-only" onchange="updateClassification()">
+                        <div class="w-5 h-5 rounded-full border-2 border-white/40 mr-3 flex items-center justify-center classification-radio">
+                            <div class="w-2 h-2 rounded-full bg-white hidden"></div>
+                        </div>
+                        <span class="text-white">Individual</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rules Section -->
+        <div class="glass-card rounded-2xl p-8 mb-8 animate-fade-in">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-2xl font-semibold text-white">Rules of the Game</h3>
+                <button onclick="toggleRulesEdit()" id="rulesEditBtn" class="px-4 py-2 glass-effect rounded-lg text-white hover-glow transition-all duration-300">
+                    Edit
+                </button>
+            </div>
+            <div id="rulesDisplay" class="text-white/80 leading-relaxed">
+                <p>1. All matches must be played at the scheduled time and venue.</p>
+                <p>2. Teams must arrive 30 minutes before match time.</p>
+                <p>3. Standard game duration applies unless specified otherwise.</p>
+                <p>4. Fair play and sportsmanship are mandatory.</p>
+                <p>5. Any disputes will be resolved by the tournament committee.</p>
+            </div>
+            <textarea id="rulesEditor" class="hidden w-full h-32 px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30 resize-none"></textarea>
+            <div id="rulesActions" class="hidden mt-4 flex gap-3">
+                <button onclick="saveRules()" class="px-6 py-2 bg-green-500/20 hover:bg-green-500/30 rounded-lg text-white transition-all duration-300">Save</button>
+                <button onclick="cancelRulesEdit()" class="px-6 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-white transition-all duration-300">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Additional Information Section -->
+        <div class="glass-card rounded-2xl p-8 mb-8 animate-fade-in">
+            <h3 class="text-2xl font-semibold text-white mb-6">Additional Information</h3>
+            <div id="additionalInfoContainer">
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Registration Fee</label>
+                        <input type="text" placeholder="Enter registration fee" 
+                               class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Contact Person</label>
+                        <input type="text" placeholder="Enter contact person" 
+                               class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Prize Pool</label>
+                        <input type="text" placeholder="Enter prize pool" 
+                               class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Registration Deadline</label>
+                        <input type="date" 
+                               class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                    </div>
+                </div>
+            </div>
+            <button onclick="addInfoField()" class="mt-4 px-6 py-3 glass-effect rounded-xl text-white hover-glow transition-all duration-300 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Add Custom Field
+            </button>
+        </div>
+
+        <!-- Team Input Section -->
+        <div class="glass-card rounded-2xl p-8 mb-8 animate-fade-in">
+            <h3 id="participantSectionTitle" class="text-2xl font-semibold text-white mb-6">Add Teams</h3>
+            <div class="flex gap-4 mb-6">
+                <input type="text" id="teamInput" placeholder="Enter team name" 
+                       class="flex-1 px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                <button onclick="addTeam()" id="addParticipantBtn" class="px-8 py-3 bg-white/20 hover:bg-white/30 rounded-xl text-white font-semibold transition-all duration-300">
+                    Add Team
+                </button>
+            </div>
+            
+            <!-- Teams List -->
+            <div id="teamsList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6"></div>
+            
+            <!-- Generate Button -->
+            <div class="text-center">
+                <button onclick="generateFixtures()" id="generateBtn" disabled 
+                        class="px-12 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 rounded-xl text-white font-bold text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Generate Fixtures
+                </button>
+            </div>
+        </div>
+
+        <!-- Fixtures Display -->
+        <div id="fixturesContainer" class="hidden animate-fade-in">
+            <div class="glass-card rounded-2xl p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold text-white">Generated Fixtures</h3>
+                    <div class="flex gap-3">
+                        <button onclick="showResults()" class="px-6 py-3 bg-blue-500/20 hover:bg-blue-500/30 rounded-xl text-white font-semibold transition-all duration-300">
+                            Result Update
+                        </button>
+                        <button onclick="downloadFixtures()" class="px-6 py-3 bg-green-500/20 hover:bg-green-500/30 rounded-xl text-white font-semibold transition-all duration-300">
+                            Download Schedule
+                        </button>
+                    </div>
+                </div>
+                <div id="fixturesDisplay"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Display Page -->
+    <div id="resultsPage" class="max-w-6xl mx-auto hidden">
+        <!-- Header with Back Button -->
+        <div class="glass-effect rounded-2xl p-6 mb-8 flex items-center justify-between">
+            <button onclick="backToFixtures()" class="glass-card rounded-xl px-6 py-3 text-white hover-glow transition-all duration-300 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Fixtures
+            </button>
+            <h2 class="text-3xl font-bold text-white">Tournament Results</h2>
+            <button onclick="downloadResults()" class="px-6 py-3 bg-green-500/20 hover:bg-green-500/30 rounded-xl text-white font-semibold transition-all duration-300">
+                Download Results
+            </button>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="glass-card rounded-2xl p-8 mb-8 animate-fade-in">
+            <h3 class="text-2xl font-semibold text-white mb-6">Results Summary</h3>
+            <div id="resultsSummary"></div>
+        </div>
+
+        <!-- Detailed Results -->
+        <div class="glass-card rounded-2xl p-8 animate-fade-in">
+            <h3 class="text-2xl font-semibold text-white mb-6">Match Results</h3>
+            <div id="detailedResults"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = '';
+        let teams = [];
+        let fixtures = [];
+        let currentClassification = 'team';
+        let customFieldCount = 0;
+
+        function initializeMode(mode) {
+            currentMode = mode;
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('fixtureGenerator').classList.remove('hidden');
+            document.getElementById('modeTitle').textContent = mode === 'league' ? 'League Generator' : 'Tournament Generator';
+            resetGenerator();
+            updateClassificationUI();
+        }
+
+        function updateClassification() {
+            const radios = document.querySelectorAll('input[name="classification"]');
+            const radioContainers = document.querySelectorAll('.classification-radio');
+            
+            radios.forEach((radio, index) => {
+                const dot = radioContainers[index].querySelector('div');
+                if (radio.checked) {
+                    currentClassification = radio.value;
+                    dot.classList.remove('hidden');
+                } else {
+                    dot.classList.add('hidden');
+                }
+            });
+            
+            updateClassificationUI();
+        }
+
+        function updateClassificationUI() {
+            const isTeam = currentClassification === 'team';
+            const title = document.getElementById('participantSectionTitle');
+            const input = document.getElementById('teamInput');
+            const button = document.getElementById('addParticipantBtn');
+            
+            title.textContent = isTeam ? 'Add Teams' : 'Add Participants';
+            input.placeholder = isTeam ? 'Enter team name' : 'Enter participant name';
+            button.textContent = isTeam ? 'Add Team' : 'Add Participant';
+        }
+
+        function toggleEdit(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field.readOnly) {
+                field.readOnly = false;
+                field.focus();
+                field.select();
+            } else {
+                field.readOnly = true;
+            }
+        }
+
+        function toggleRulesEdit() {
+            const display = document.getElementById('rulesDisplay');
+            const editor = document.getElementById('rulesEditor');
+            const actions = document.getElementById('rulesActions');
+            const btn = document.getElementById('rulesEditBtn');
+            
+            if (display.classList.contains('hidden')) {
+                // Cancel edit
+                display.classList.remove('hidden');
+                editor.classList.add('hidden');
+                actions.classList.add('hidden');
+                btn.textContent = 'Edit';
+            } else {
+                // Start edit
+                editor.value = display.innerHTML.replace(/<p>/g, '').replace(/<\/p>/g, '\n').trim();
+                display.classList.add('hidden');
+                editor.classList.remove('hidden');
+                actions.classList.remove('hidden');
+                btn.textContent = 'Cancel';
+                editor.focus();
+            }
+        }
+
+        function saveRules() {
+            const editor = document.getElementById('rulesEditor');
+            const display = document.getElementById('rulesDisplay');
+            const actions = document.getElementById('rulesActions');
+            const btn = document.getElementById('rulesEditBtn');
+            
+            const rules = editor.value.split('\n').filter(rule => rule.trim())
+                .map(rule => `<p>${rule.trim()}</p>`).join('');
+            
+            display.innerHTML = rules;
+            display.classList.remove('hidden');
+            editor.classList.add('hidden');
+            actions.classList.add('hidden');
+            btn.textContent = 'Edit';
+        }
+
+        function cancelRulesEdit() {
+            toggleRulesEdit();
+        }
+
+        function addInfoField() {
+            customFieldCount++;
+            const container = document.getElementById('additionalInfoContainer');
+            const newField = document.createElement('div');
+            newField.className = 'grid md:grid-cols-2 gap-4 mb-4';
+            newField.innerHTML = `
+                <div>
+                    <input type="text" placeholder="Enter field label" 
+                           class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30 mb-2"
+                           onchange="updateFieldLabel(this)">
+                    <label class="block text-white/80 text-sm font-medium mb-2">Custom Field ${customFieldCount}</label>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" placeholder="Enter value" 
+                           class="flex-1 px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                    <button onclick="removeInfoField(this)" class="px-3 py-3 bg-red-500/20 hover:bg-red-500/30 rounded-xl text-white transition-all duration-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            container.appendChild(newField);
+        }
+
+        function updateFieldLabel(input) {
+            const label = input.parentElement.querySelector('label');
+            if (input.value.trim()) {
+                label.textContent = input.value.trim();
+            }
+        }
+
+        function removeInfoField(button) {
+            button.closest('.grid').remove();
+        }
+
+        function goHome() {
+            document.getElementById('homePage').classList.remove('hidden');
+            document.getElementById('fixtureGenerator').classList.add('hidden');
+            resetGenerator();
+        }
+
+        function resetGenerator() {
+            teams = [];
+            fixtures = [];
+            customFieldCount = 0;
+            document.getElementById('teamInput').value = '';
+            document.getElementById('teamsList').innerHTML = '';
+            document.getElementById('fixturesContainer').classList.add('hidden');
+            
+            // Reset classification to team
+            currentClassification = 'team';
+            document.querySelector('input[name="classification"][value="team"]').checked = true;
+            document.querySelector('input[name="classification"][value="individual"]').checked = false;
+            updateClassification();
+            
+            // Reset additional info fields to default
+            const container = document.getElementById('additionalInfoContainer');
+            container.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Registration Fee</label>
+                        <input type="text" placeholder="Enter registration fee" 
+                               class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Contact Person</label>
+                        <input type="text" placeholder="Enter contact person" 
+                               class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Prize Pool</label>
+                        <input type="text" placeholder="Enter prize pool" 
+                               class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                    </div>
+                    <div>
+                        <label class="block text-white/80 text-sm font-medium mb-2">Registration Deadline</label>
+                        <input type="date" 
+                               class="w-full px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+                    </div>
+                </div>
+            `;
+            
+            updateGenerateButton();
+        }
+
+        function addTeam() {
+            const input = document.getElementById('teamInput');
+            const teamName = input.value.trim();
+            
+            if (teamName && !teams.includes(teamName)) {
+                teams.push(teamName);
+                input.value = '';
+                updateTeamsList();
+                updateGenerateButton();
+            }
+        }
+
+        function removeTeam(teamName) {
+            teams = teams.filter(team => team !== teamName);
+            updateTeamsList();
+            updateGenerateButton();
+        }
+
+        function updateTeamsList() {
+            const container = document.getElementById('teamsList');
+            container.innerHTML = teams.map(team => `
+                <div class="glass-effect rounded-lg p-3 flex items-center justify-between">
+                    <span class="text-white font-medium">${team}</span>
+                    <button onclick="removeTeam('${team}')" class="text-red-300 hover:text-red-200 ml-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updateGenerateButton() {
+            const btn = document.getElementById('generateBtn');
+            const minTeams = currentMode === 'league' ? 3 : 4;
+            btn.disabled = teams.length < minTeams;
+        }
+
+        function generateFixtures() {
+            if (currentMode === 'league') {
+                generateLeagueFixtures();
+            } else {
+                generateTournamentFixtures();
+            }
+            displayFixtures();
+        }
+
+        function generateLeagueFixtures() {
+            fixtures = [];
+            const shuffledTeams = [...teams].sort(() => Math.random() - 0.5);
+            
+            for (let i = 0; i < shuffledTeams.length; i++) {
+                for (let j = i + 1; j < shuffledTeams.length; j++) {
+                    fixtures.push({
+                        round: Math.floor(Math.random() * Math.ceil(shuffledTeams.length / 2)) + 1,
+                        homeTeam: shuffledTeams[i],
+                        awayTeam: shuffledTeams[j],
+                        date: getRandomDate(),
+                        time: getRandomTime()
+                    });
+                }
+            }
+            
+            fixtures.sort((a, b) => a.round - b.round);
+        }
+
+        function generateTournamentFixtures() {
+            fixtures = [];
+            let currentRound = [...teams].sort(() => Math.random() - 0.5);
+            let roundNumber = 1;
+            
+            while (currentRound.length > 1) {
+                const nextRound = [];
+                const roundName = getRoundName(currentRound.length);
+                
+                for (let i = 0; i < currentRound.length; i += 2) {
+                    if (i + 1 < currentRound.length) {
+                        const winner = `Winner of ${currentRound[i]} vs ${currentRound[i + 1]}`;
+                        fixtures.push({
+                            round: roundNumber,
+                            roundName: roundName,
+                            homeTeam: currentRound[i],
+                            awayTeam: currentRound[i + 1],
+                            date: getRandomDate(),
+                            time: getRandomTime()
+                        });
+                        nextRound.push(winner);
+                    } else {
+                        nextRound.push(currentRound[i]);
+                    }
+                }
+                
+                currentRound = nextRound;
+                roundNumber++;
+            }
+        }
+
+        function getRoundName(teamsCount) {
+            if (teamsCount >= 16) return 'Round of ' + teamsCount;
+            if (teamsCount === 8) return 'Quarter Finals';
+            if (teamsCount === 4) return 'Semi Finals';
+            if (teamsCount === 2) return 'Final';
+            return 'Round ' + teamsCount;
+        }
+
+        function getRandomDate() {
+            const start = new Date();
+            const end = new Date(start.getTime() + (30 * 24 * 60 * 60 * 1000));
+            const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            return randomDate.toLocaleDateString();
+        }
+
+        function getRandomTime() {
+            const hours = Math.floor(Math.random() * 12) + 10;
+            const minutes = Math.random() < 0.5 ? '00' : '30';
+            return `${hours}:${minutes}`;
+        }
+
+        function displayFixtures() {
+            const container = document.getElementById('fixturesDisplay');
+            
+            if (currentMode === 'league') {
+                displayLeagueFixtures(container);
+            } else {
+                displayTournamentFixtures(container);
+            }
+            
+            document.getElementById('fixturesContainer').classList.remove('hidden');
+        }
+
+        function displayLeagueFixtures(container) {
+            const rounds = {};
+            fixtures.forEach(fixture => {
+                if (!rounds[fixture.round]) rounds[fixture.round] = [];
+                rounds[fixture.round].push(fixture);
+            });
+
+            container.innerHTML = Object.keys(rounds).map(round => `
+                <div class="mb-8">
+                    <h4 class="text-xl font-semibold text-white mb-4">Round ${round}</h4>
+                    <div class="glass-effect rounded-xl overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-white/10">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Match</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Date</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Time</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rounds[round].map((fixture, index) => `
+                                    <tr class="border-t border-white/10">
+                                        <td class="px-6 py-4 text-white">${fixture.homeTeam} vs ${fixture.awayTeam}</td>
+                                        <td class="px-6 py-4 text-white/80">${fixture.date}</td>
+                                        <td class="px-6 py-4">
+                                            <input type="time" value="${fixture.time}" 
+                                                   onchange="updateFixtureTime(${fixture.round}, ${index}, this.value)"
+                                                   class="bg-transparent text-white border border-white/20 rounded px-2 py-1 text-sm focus:outline-none focus:border-white/50">
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <input type="text" placeholder="0-0" value="${fixture.result || ''}"
+                                                   onchange="updateFixtureResult(${fixture.round}, ${index}, this.value)"
+                                                   class="bg-transparent text-white border border-white/20 rounded px-2 py-1 text-sm w-16 focus:outline-none focus:border-white/50">
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayTournamentFixtures(container) {
+            const rounds = {};
+            fixtures.forEach(fixture => {
+                if (!rounds[fixture.round]) rounds[fixture.round] = [];
+                rounds[fixture.round].push(fixture);
+            });
+
+            container.innerHTML = Object.keys(rounds).map(round => `
+                <div class="mb-8">
+                    <h4 class="text-xl font-semibold text-white mb-4">${rounds[round][0].roundName}</h4>
+                    <div class="glass-effect rounded-xl overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-white/10">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Match</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Date</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Time</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rounds[round].map((fixture, index) => `
+                                    <tr class="border-t border-white/10">
+                                        <td class="px-6 py-4 text-white">${fixture.homeTeam} vs ${fixture.awayTeam}</td>
+                                        <td class="px-6 py-4 text-white/80">${fixture.date}</td>
+                                        <td class="px-6 py-4">
+                                            <input type="time" value="${fixture.time}" 
+                                                   onchange="updateFixtureTime(${fixture.round}, ${index}, this.value)"
+                                                   class="bg-transparent text-white border border-white/20 rounded px-2 py-1 text-sm focus:outline-none focus:border-white/50">
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <input type="text" placeholder="0-0" value="${fixture.result || ''}"
+                                                   onchange="updateFixtureResult(${fixture.round}, ${index}, this.value)"
+                                                   class="bg-transparent text-white border border-white/20 rounded px-2 py-1 text-sm w-16 focus:outline-none focus:border-white/50">
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateFixtureTime(round, index, newTime) {
+            const roundFixtures = fixtures.filter(f => f.round === round);
+            if (roundFixtures[index]) {
+                roundFixtures[index].time = newTime;
+            }
+        }
+
+        function updateFixtureResult(round, index, result) {
+            const roundFixtures = fixtures.filter(f => f.round === round);
+            if (roundFixtures[index]) {
+                roundFixtures[index].result = result;
+            }
+        }
+
+        function showResults() {
+            document.getElementById('fixtureGenerator').classList.add('hidden');
+            document.getElementById('resultsPage').classList.remove('hidden');
+            displayResults();
+        }
+
+        function backToFixtures() {
+            document.getElementById('resultsPage').classList.add('hidden');
+            document.getElementById('fixtureGenerator').classList.remove('hidden');
+        }
+
+        function displayResults() {
+            displayResultsSummary();
+            displayDetailedResults();
+        }
+
+        function displayResultsSummary() {
+            const completedMatches = fixtures.filter(f => f.result && f.result.trim());
+            const totalMatches = fixtures.length;
+            
+            const summary = document.getElementById('resultsSummary');
+            summary.innerHTML = `
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="glass-effect rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold text-white mb-2">${totalMatches}</div>
+                        <div class="text-white/70">Total Matches</div>
+                    </div>
+                    <div class="glass-effect rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold text-green-400 mb-2">${completedMatches.length}</div>
+                        <div class="text-white/70">Completed</div>
+                    </div>
+                    <div class="glass-effect rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold text-yellow-400 mb-2">${totalMatches - completedMatches.length}</div>
+                        <div class="text-white/70">Pending</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayDetailedResults() {
+            const container = document.getElementById('detailedResults');
+            
+            if (currentMode === 'league') {
+                displayLeagueResults(container);
+            } else {
+                displayTournamentResults(container);
+            }
+        }
+
+        function displayLeagueResults(container) {
+            const rounds = {};
+            fixtures.forEach(fixture => {
+                if (!rounds[fixture.round]) rounds[fixture.round] = [];
+                rounds[fixture.round].push(fixture);
+            });
+
+            container.innerHTML = Object.keys(rounds).map(round => `
+                <div class="mb-8">
+                    <h4 class="text-xl font-semibold text-white mb-4">Round ${round}</h4>
+                    <div class="glass-effect rounded-xl overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-white/10">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Match</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Date</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Time</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Result</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rounds[round].map(fixture => `
+                                    <tr class="border-t border-white/10">
+                                        <td class="px-6 py-4 text-white">${fixture.homeTeam} vs ${fixture.awayTeam}</td>
+                                        <td class="px-6 py-4 text-white/80">${fixture.date}</td>
+                                        <td class="px-6 py-4 text-white/80">${fixture.time}</td>
+                                        <td class="px-6 py-4 text-white font-semibold">${fixture.result || '-'}</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${fixture.result && fixture.result.trim() ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}">
+                                                ${fixture.result && fixture.result.trim() ? 'Completed' : 'Pending'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayTournamentResults(container) {
+            const rounds = {};
+            fixtures.forEach(fixture => {
+                if (!rounds[fixture.round]) rounds[fixture.round] = [];
+                rounds[fixture.round].push(fixture);
+            });
+
+            container.innerHTML = Object.keys(rounds).map(round => `
+                <div class="mb-8">
+                    <h4 class="text-xl font-semibold text-white mb-4">${rounds[round][0].roundName}</h4>
+                    <div class="glass-effect rounded-xl overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-white/10">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Match</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Date</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Time</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Result</th>
+                                    <th class="px-6 py-4 text-left text-white font-semibold">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rounds[round].map(fixture => `
+                                    <tr class="border-t border-white/10">
+                                        <td class="px-6 py-4 text-white">${fixture.homeTeam} vs ${fixture.awayTeam}</td>
+                                        <td class="px-6 py-4 text-white/80">${fixture.date}</td>
+                                        <td class="px-6 py-4 text-white/80">${fixture.time}</td>
+                                        <td class="px-6 py-4 text-white font-semibold">${fixture.result || '-'}</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${fixture.result && fixture.result.trim() ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}">
+                                                ${fixture.result && fixture.result.trim() ? 'Completed' : 'Pending'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function downloadResults() {
+            const data = fixtures.map(f => ({
+                Round: currentMode === 'league' ? f.round : f.roundName,
+                'Home Team': f.homeTeam,
+                'Away Team': f.awayTeam,
+                Date: f.date,
+                Time: f.time,
+                Result: f.result || 'Pending',
+                Status: f.result && f.result.trim() ? 'Completed' : 'Pending'
+            }));
+            
+            const csv = [
+                Object.keys(data[0]).join(','),
+                ...data.map(row => Object.values(row).join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentMode}_results.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function downloadFixtures() {
+            const data = fixtures.map(f => ({
+                Round: currentMode === 'league' ? f.round : f.roundName,
+                'Home Team': f.homeTeam,
+                'Away Team': f.awayTeam,
+                Date: f.date,
+                Time: f.time,
+                Result: f.result || ''
+            }));
+            
+            const csv = [
+                Object.keys(data[0]).join(','),
+                ...data.map(row => Object.values(row).join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentMode}_fixtures.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Allow Enter key to add teams
+        document.getElementById('teamInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTeam();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9640bb315245d572',t:'MTc1MzMzMTk0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

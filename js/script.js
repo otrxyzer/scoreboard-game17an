@@ -64,6 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(m);
         window.closeModal = () => document.body.removeChild(m);
     }
+	// FUNGSI BARU: Untuk memainkan file suara
+	function playSound(soundFile) {
+		const audio = new Audio(soundFile);
+		audio.play().catch(error => {
+			// Menangani error jika browser memblokir autoplay
+			console.warn("Audio playback was blocked by the browser. User interaction is needed.", error);
+		});
+	}
 
     // --- CORE LOGIC - TIMER ---
     function updateTimerDisplay() {
@@ -131,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         winsElement.textContent = parseInt(winsElement.textContent) + 1;
         document.getElementById('teamAScore').textContent = '0';
         document.getElementById('teamBScore').textContent = '0';
+		playSound('sounds/round-end1.mp3');
         checkGameWinCondition(winningTeam);
     }
 

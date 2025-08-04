@@ -59,31 +59,44 @@
                             <p class="sporty-font text-xs text-gray-400 mt-1" id="teamBPlayer">PLAYER: JANE SMITH</p>
                         </div>
                     </div>
-                    <div class="grid grid-cols-5 gap-4 items-center mt-2">
-                        <div class="col-span-2">
-                            <div class="score-display rounded-lg p-4 sm:p-8 text-center neon-glow" id="teamAScoreWrapper">
-                                <span class="scoreboard-font text-5xl sm:text-7xl font-black text-cyan-400" id="teamAScore">0</span>
-                                <div class="flex gap-2 justify-center mt-4">
-                                    <button onclick="updateScoreByButton('A', 5, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all">+5</button>
-                                    <button onclick="updateScoreByButton('A', 10, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all">+10</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <div class="glass-effect rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto pulse-animation">
-                                <span class="sporty-font text-xl sm:text-2xl font-bold text-red-400">VS</span>
-                            </div>
-                        </div>
-                        <div class="col-span-2">
-                            <div class="score-display rounded-lg p-4 sm:p-8 text-center neon-glow" id="teamBScoreWrapper">
-                                <span class="scoreboard-font text-5xl sm:text-7xl font-black text-cyan-400" id="teamBScore">0</span>
-                                <div class="flex gap-2 justify-center mt-4">
-                                    <button onclick="updateScoreByButton('B', 5, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all">+5</button>
-                                    <button onclick="updateScoreByButton('B', 10, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all">+10</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Ongoing Scores -->
+					<div class="relative mt-2"> <!-- 1. Tambahkan 'relative' di sini -->
+						
+						<!-- 2. Buat kontainer baru untuk skor dengan flexbox -->
+						<div class="flex items-center gap-4">
+
+							<!-- Kolom Skor Tim A -->
+							<div class="w-1/2"> <!-- 3. Beri lebar 50% -->
+								<div class="score-display rounded-lg p-4 sm:p-8 text-center neon-glow" id="teamAScoreWrapper">
+									<span class="scoreboard-font text-5xl sm:text-7xl font-black text-cyan-400" id="teamAScore">0</span>
+									<div class="flex gap-2 justify-center mt-4">
+										<button onclick="updateScoreByButton('A', 5, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all">+5</button>
+										<button onclick="updateScoreByButton('A', 10, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all">+10</button>
+									</div>
+								</div>
+							</div>
+
+							<!-- Kolom Skor Tim B -->
+							<div class="w-1/2"> <!-- 4. Beri lebar 50% -->
+								<div class="score-display rounded-lg p-4 sm:p-8 text-center neon-glow" id="teamBScoreWrapper">
+									<span class="scoreboard-font text-5xl sm:text-7xl font-black text-cyan-400" id="teamBScore">0</span>
+									<div class="flex gap-2 justify-center mt-4">
+										<button onclick="updateScoreByButton('B', 5, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all">+5</button>
+										<button onclick="updateScoreByButton('B', 10, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all">+10</button>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						<!-- 5. Lingkaran "VS" sekarang diposisikan secara absolut -->
+						<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+							<div class="glass-effect rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center pulse-animation border-4 border-cyan-400">
+								<span class="sporty-font text-lg sm:text-4xl font-bold text-red-400">VS</span>
+							</div>
+						</div>
+
+					</div>
                 </div>
                 <div class="glass-effect rounded-lg p-4">
                     <h3 class="sporty-font text-lg font-bold text-yellow-400 mb-2">MATCH HIGHLIGHTS</h3>
@@ -168,6 +181,4 @@
     <script src="js/script.js"></script>
 </body>
 </html>
-
-
 

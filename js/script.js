@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			console.warn("Audio playback was blocked by the browser. User interaction is needed.", error);
 		});
 	}
-
+	
     // --- CORE LOGIC - TIMER ---
     function updateTimerDisplay() {
         const m = Math.floor(currentTime / 60);
@@ -180,19 +180,56 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showGameWinner(winnerName) {
-        pauseTimer();
-        startWinnerSlideshow();
-        const overlay = `
-            <div class="glass-effect rounded-lg p-8 max-w-lg w-full mx-4 text-center">
-                <h1 class="scoreboard-font text-5xl font-black text-yellow-400 mb-4 neon-glow">🏆 GAME OVER 🏆</h1>
-                <h2 class="sporty-font text-3xl font-bold text-cyan-300 mb-2">${winnerName} is the Champion!</h2>
-                <div class="mt-6 text-center">
-                    <button onclick="resetGameNow()" class="glass-effect px-6 py-3 rounded sporty-font font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all">🔄 RESET GAME</button>
-                </div>
+    pauseTimer();
+    startWinnerSlideshow();
+
+    const overlay = `
+        <div class="glass-effect rounded-lg p-8 max-w-lg w-full mx-auto text-center">
+            
+            <h1 class="scoreboard-font text-5xl font-black text-yellow-400 mb-4 neon-glow">
+                🏆 GAME OVER 🏆
+            </h1>
+            
+            <h2 class="sporty-font text-3xl font-bold text-cyan-300 mb-2">
+                ${winnerName} is the WINNER!
+            </h2>
+            
+            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                <!-- Tombol Victory Anthem -->
+                <button 
+                    onclick="playVictoryAnthem()" 
+                    class="
+                        w-full glass-effect px-6 py-3 rounded-lg sporty-font font-bold 
+                        text-yellow-300 hover:bg-yellow-500 hover:bg-opacity-30 
+                        transition-all 
+                        flex items-center justify-center gap-2
+                    "
+                >
+                    <span class="text-xl">🎵</span>
+                    <span>VICTORY ANTHEM</span>
+                </button>
+                
+                <!-- Tombol Reset Game -->
+                <button 
+                    onclick="resetGameNow()" 
+                    class="
+                        w-full glass-effect px-6 py-3 rounded-lg sporty-font font-bold 
+                        text-green-400 hover:bg-green-600 hover:bg-opacity-30 
+                        transition-all 
+                        flex items-center justify-center gap-2
+                    "
+                >
+                    <span class="text-xl">🔄</span>
+                    <span>RESET GAME</span>
+                </button>
+
             </div>
-        `;
-        createModal(overlay);
-    }
+        </div>
+    `;
+
+    createModal(overlay);
+}
 
     window.resetGameNow = () => {
         closeModal();
@@ -226,7 +263,15 @@ document.addEventListener('DOMContentLoaded', () => {
             slides[currentIndex].classList.add('visible');
         }, 5000); // Change image every 5 seconds
     }
-
+	
+	window.playVictoryAnthem = function() {
+    const anthem = new Audio('sounds/woke.mp3');
+    anthem.play().catch(e => {
+        console.warn("Audio playback failed.", e);
+        // Tambahkan notifikasi untuk pengguna jika gagal
+        showNotification("Could not play victory anthem.", "error");
+    });
+}
     function stopWinnerSlideshow() {
         clearInterval(slideshowInterval);
         document.getElementById('winnerSlideshow').classList.remove('active');
@@ -426,8 +471,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update Co-Sponsor image
         const coSponsorImageElement = document.getElementById('coSponsorImage');
         if (gameSettings.coSponsorImageUrl) {
-            coSponsorImageElement.src = gameSettings.coSponsorImageUrl;
-            coSponsorImageElement.style.display = 'block';
+            //coSponsorImageElement.src = gameSettings.coSponsorImageUrl;
+            //coSponsorImageElement.style.display = 'block';
         } else {
             coSponsorImageElement.src = '';
             coSponsorImageElement.style.display = 'none';

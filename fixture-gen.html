@@ -51,41 +51,45 @@
         </script>
 </head>
 <body class="p-6">
-    <!-- Home Page Container -->
-    <div id="homePage" class="max-w-6xl mx-auto">
-        <!-- Header -->
-        <div class="glass-effect rounded-2xl p-8 mb-8 text-center">
-            <h1 class="text-4xl font-bold text-white mb-4">Sports Fixture Generator</h1>
-            <p class="text-white/80 text-lg">Create professional tournament and league schedules instantly</p>
-        </div>
-        
-        <!-- Mode Selection -->
-        <div class="grid md:grid-cols-2 gap-8 mb-8">
-            <button onclick="initializeMode('league')" class="glass-card rounded-2xl p-8 hover-glow transition-all duration-300 group">
-                <div class="text-center">
-                    <div class="w-20 h-20 mx-auto mb-6 glass-effect rounded-full flex items-center justify-center">
-                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white mb-4">League Mode</h3>
-                    <p class="text-white/70">Round-robin format where every team plays every other team</p>
-                </div>
-            </button>
-            
-            <button onclick="initializeMode('tournament')" class="glass-card rounded-2xl p-8 hover-glow transition-all duration-300 group">
-                <div class="text-center">
-                    <div class="w-20 h-20 mx-auto mb-6 glass-effect rounded-full flex items-center justify-center">
-                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white mb-4">Tournament Mode</h3>
-                    <p class="text-white/70">Knockout elimination format with brackets and rounds</p>
-                </div>
-            </button>
-        </div>
-    </div>
+		<!-- Home Page Container -->
+	<div id="homePage" class="max-w-6xl mx-auto">
+		
+		<!-- Header -->
+		<div class="glass-effect rounded-2xl p-8 mb-8 text-center">
+			<h1 class="text-4xl font-bold text-white mb-4">Sports Fixture Generator</h1>
+			<p class="text-white/80 text-lg">Create professional tournament and league schedules instantly</p>
+		</div>
+		
+		<!-- Mode Selection -->
+		<div class="grid md:grid-cols-2 gap-8 mb-8">
+			<button onclick="initializeMode('league')" class="glass-card rounded-2xl p-8 hover-glow transition-all">
+				<div class="text-center">
+					<div class="w-20 h-20 mx-auto mb-6 glass-effect rounded-full flex items-center justify-center">
+						<svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+					</div>
+					<h3 class="text-2xl font-bold text-white mb-4">League Mode</h3>
+					<p class="text-white/70">Round-robin format where every team plays every other team</p>
+				</div>
+			</button>
+			<button onclick="initializeMode('tournament')" class="glass-card rounded-2xl p-8 hover-glow transition-all">
+				<div class="text-center">
+					<div class="w-20 h-20 mx-auto mb-6 glass-effect rounded-full flex items-center justify-center">
+						<svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+					</div>
+					<h3 class="text-2xl font-bold text-white mb-4">Tournament Mode</h3>
+					<p class="text-white/70">Knockout elimination format with brackets and rounds</p>
+				</div>
+			</button>
+		</div>
+
+		<!-- Tautan Kembali ke Scoreboard -->
+		<div class="text-center">
+			<a href="index.html" class="sporty-font text-white/80 hover:text-white hover:underline transition-all">
+				&larr; Back to Scoreboard
+			</a>
+		</div>
+
+	</div>
 
     <!-- Fixture Generator Interface -->
     <div id="fixtureGenerator" class="max-w-6xl mx-auto hidden">
@@ -239,24 +243,30 @@
         </div>
 
         <!-- Fixtures Display -->
-        <div id="fixturesContainer" class="hidden animate-fade-in">
-            <div class="glass-card rounded-2xl p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-semibold text-white">Generated Fixtures</h3>
-                    <div class="flex gap-3">
-                        <button onclick="showResults()" class="px-6 py-3 bg-blue-500/20 hover:bg-blue-500/30 rounded-xl text-white font-semibold transition-all duration-300">
-                            Result Update
-                        </button>
-                        <button onclick="downloadFixtures()" class="px-6 py-3 bg-green-500/20 hover:bg-green-500/30 rounded-xl text-white font-semibold transition-all duration-300">
-                            Download Schedule
-                        </button>
-                    </div>
-                </div>
-                <div id="fixturesDisplay"></div>
-            </div>
-        </div>
-    </div>
+        <!-- Fixtures Display -->
+	<div id="fixturesContainer" class="hidden animate-fade-in">
+		<div class="glass-card rounded-2xl p-8">
+			<div class="flex justify-between items-center mb-6">
+				<h3 class="text-2xl font-semibold text-white">Generated Fixtures</h3>
+				<div class="flex gap-3">
+					<button onclick="showResults()" class="px-6 py-3 bg-blue-500/20 hover:bg-blue-500/30 rounded-xl text-white font-semibold transition-all">
+						Result Update
+					</button>
+					<button onclick="downloadFixtures()" class="px-6 py-3 bg-green-500/20 hover:bg-green-500/30 rounded-xl text-white font-semibold transition-all">
+						Download Schedule
+					</button>
+				</div>
+			</div>
+			<div id="fixturesDisplay"></div>
+		</div>
 
+		<!-- Tautan Kembali ke Scoreboard (setelah generate) -->
+		<div class="text-center mt-6">
+			<a href="index.html" class="glass-effect rounded-xl px-8 py-3 text-white hover-glow transition-all">
+				&larr; Back to Scoreboard
+			</a>
+		</div>
+	</div>
     <!-- Results Display Page -->
     <div id="resultsPage" class="max-w-6xl mx-auto hidden">
         <!-- Header with Back Button -->
@@ -511,13 +521,25 @@
         }
 
         function generateFixtures() {
-            if (currentMode === 'league') {
-                generateLeagueFixtures();
-            } else {
-                generateTournamentFixtures();
-            }
-            displayFixtures();
-        }
+			if (teams.length < 3) { // Butuh minimal 3 tim
+				alert("Please add at least 3 teams to generate fixtures.");
+				return;
+			}
+
+			if (currentMode === 'league') {
+				generateLeagueFixtures();
+			} else {
+				generateTournamentFixtures();
+			}
+
+			initializeStandings();
+			localStorage.setItem('tournament_teams', JSON.stringify(teams));
+			localStorage.setItem('tournament_fixtures', JSON.stringify(fixtures));
+			localStorage.setItem('tournament_standings', JSON.stringify(standings));
+			
+			displayFixtures();
+			alert(`Fixtures and standings for ${teams.length} teams have been generated and saved!`);
+		}
 
         function generateLeagueFixtures() {
             fixtures = [];
@@ -601,7 +623,17 @@
             
             document.getElementById('fixturesContainer').classList.remove('hidden');
         }
-
+		
+		function initializeStandings() {
+			// Membuat klasemen awal berdasarkan daftar tim yang sudah diinput
+			standings = teams.map((team, index) => ({
+				pos: index + 1,
+				teamName: team.name,
+				flag: team.flag,
+				W: 0, L: 0, PTS: 0
+			}));
+		}
+		
         function displayLeagueFixtures(container) {
             const rounds = {};
             fixtures.forEach(fixture => {
@@ -895,3 +927,4 @@
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9640bb315245d572',t:'MTc1MzMzMTk0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+

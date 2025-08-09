@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
 		.scoreboard-font {
             font-family: 'Chivo Mono', monospace;
-			font-size: 8rem;
+			font-size: 7rem;
 			line-height: 1;
 			font-weight: 700;
 			color: #eb9e34;
@@ -191,4 +191,5 @@
 	.notification-close-btn:hover {
 		color: white;
 	}
+
 

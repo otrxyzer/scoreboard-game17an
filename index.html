@@ -6,6 +6,9 @@
     <title>Sport Scoreboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETQSSWV99K"></script>
     <script>
@@ -20,26 +23,31 @@
     <div id="winnerSlideshow" class="slideshow-container"></div>
     <div class="p-4 max-w-7xl mx-auto relative z-10">
         <header class="glass-effect rounded-lg p-4 mb-4 text-center">
-            <h1 class="scoreboard-font text-2xl sm:text-3xl font-black text-cyan-300 mb-2" id="matchTitle">CHAMPIONSHIP LEAGUE</h1>
-            <p class="sporty-font text-base sm:text-lg text-gray-300" id="sportName">BASKETBALL TOURNAMENT</p>
+            <h1 class="scoreboard-font text-2xl sm:text-3xl font-black text-cyan-300 mb-2" id="matchTitle">BAIM PLEE RT 14 TOURNAMENT </h1>
+            <p class="sporty-font text-base sm:text-lg text-gray-300" id="sportName">PLEE</p>
         </header>
         <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4">
             <div class="lg:col-span-8 flex flex-col gap-4">
                 <div class="glass-effect rounded-lg p-4 sm:p-6">
                     <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 items-center mb-4">
-                        <div class="team-card rounded-lg p-4 text-center order-2 sm:order-1">
-                            <div class="flex items-center justify-center gap-2 mb-2">
-                                <span class="text-2xl" id="teamAFlag">🇺🇸</span>
-                                <h3 class="sporty-font text-lg sm:text-xl font-bold text-cyan-300" id="teamAName">TEAM ALPHA</h3>
-                            </div>
-                            <div class="score-display rounded-lg p-3">
-                                <span class="scoreboard-font text-3xl font-black text-green-400" id="teamAWins">0</span>
-                            </div>
-                            <p class="sporty-font text-sm text-gray-300 mt-1">WINS</p>
-                            <p class="sporty-font text-xs text-gray-400 mt-1" id="teamAPlayer">PLAYER: JOHN DOE</p>
-                        </div>
+                        <!-- KODE BARU TIM A -->
+						<div class="flex flex-col items-center gap-3 order-2 sm:order-1 w-full sm:w-auto flex-1">
+							<!-- 1. Bagian Identitas Tim (Nama & Bendera) -->
+							<div class="flex items-center justify-center gap-3">
+								<span class="text-3xl" id="teamAFlag"></span>
+								<h3 class="sporty-font text-2xl sm:text-3xl font-bold text-white" style= "justify: right" id="teamAName"></h3>
+							</div>
+							<!-- 2. Kartu Skor -->
+							<div class="team-card rounded-lg p-4 text-center w-full">
+								<div class="score-display rounded-lg p-3">
+									<span class="scoreboard-font text-3xl font-black text-green-400" id="teamAWins">0</span>
+								</div>
+								<p class="sporty-font text-sm text-gray-300 mt-1">WINS</p>
+								<p class="sporty-font text-xs text-gray-400 mt-1" id="teamAPlayer">Al Capone</p>
+							</div>
+						</div>
                         <div class="sm:col-span-3 text-center order-1 sm:order-2">
-                            <div class="glass-effect rounded-lg p-4">
+                            <div class="glass-effect rounded-lg p-4 w-86">
                                 <h2 class="sporty-font text-xl sm:text-2xl font-bold text-yellow-400 mb-2" id="matchPhase">ROUND 1</h2>
                                 <p class="sporty-font text-base sm:text-lg text-cyan-300" id="timestampDisplay">SEMI-FINAL</p>
                                 <p class="sporty-font text-sm text-gray-400 mt-1">
@@ -47,17 +55,22 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="team-card rounded-lg p-4 text-center order-3 sm:order-3">
-                            <div class="flex items-center justify-center gap-2 mb-2">
-                                <span class="text-2xl" id="teamBFlag">🇬🇧</span>
-                                <h3 class="sporty-font text-lg sm:text-xl font-bold text-cyan-300" id="teamBName">TEAM BETA</h3>
-                            </div>
-                            <div class="score-display rounded-lg p-3">
-                                <span class="scoreboard-font text-3xl font-black text-green-400" id="teamBWins">0</span>
-                            </div>
-                            <p class="sporty-font text-sm text-gray-300 mt-1">WINS</p>
-                            <p class="sporty-font text-xs text-gray-400 mt-1" id="teamBPlayer">PLAYER: JANE SMITH</p>
-                        </div>
+                        <!-- KODE BARU TIM B -->
+						<div class="flex flex-col items-center gap-3 order-3 sm:order-3 w-full sm:w-auto flex-1">
+							<!-- 1. Bagian Identitas Tim (Nama & Bendera) -->
+							<div class="flex items-center justify-center sm:justify-end gap-3">
+								<h3 class="sporty-font text-2xl sm:text-3xl font-bold text-white" id="teamBName"></h3>
+								<span class="text-3xl" id="teamBFlag"></span>
+							</div>
+							<!-- 2. Kartu Skor -->
+							<div class="team-card rounded-lg p-4 text-center w-full">
+								<div class="score-display rounded-lg p-3">
+									<span class="scoreboard-font text-3xl font-black text-green-400" id="teamBWins">0</span>
+								</div>
+								<p class="sporty-font text-sm text-gray-300 mt-1">WINS</p>
+								<p class="sporty-font text-xs text-gray-400 mt-1" id="teamBPlayer">John Doe</p>
+							</div>
+						</div>
                     </div>
                     <!-- Ongoing Scores -->
 					<div class="relative mt-2"> <!-- 1. Tambahkan 'relative' di sini -->
@@ -68,7 +81,7 @@
 							<!-- Kolom Skor Tim A -->
 							<div class="w-1/2"> <!-- 3. Beri lebar 50% -->
 								<div class="score-display rounded-lg p-4 sm:p-8 text-center neon-glow" id="teamAScoreWrapper">
-									<span class="scoreboard-font text-5xl sm:text-7xl font-black text-cyan-400" id="teamAScore">0</span>
+									<span class="scoreboard-font text-8xl sm:text-10xl font-black text-yellow-400" id="teamAScore">0</span>
 									<div class="flex gap-2 justify-center mt-4">
 										<button onclick="updateScoreByButton('A', 5, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all">+5</button>
 										<button onclick="updateScoreByButton('A', 10, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all">+10</button>
@@ -79,7 +92,7 @@
 							<!-- Kolom Skor Tim B -->
 							<div class="w-1/2"> <!-- 4. Beri lebar 50% -->
 								<div class="score-display rounded-lg p-4 sm:p-8 text-center neon-glow" id="teamBScoreWrapper">
-									<span class="scoreboard-font text-5xl sm:text-7xl font-black text-cyan-400" id="teamBScore">0</span>
+									<span class="scoreboard-font text-8xl sm:text-10xl font-black text-orange-400" id="teamBScore">0</span>
 									<div class="flex gap-2 justify-center mt-4">
 										<button onclick="updateScoreByButton('B', 5, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all">+5</button>
 										<button onclick="updateScoreByButton('B', 10, event)" class="glass-effect px-3 py-1 rounded sporty-font text-sm font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all">+10</button>
@@ -97,7 +110,13 @@
 						</div>
 
 					</div>
+					<button onclick="toggleFocusMode()" class="absolute top-3 right-3 glass-effect rounded-full p-2 hover:bg-white/20 transition-all">
+						<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1v4m0 0h-4m4 0l-5-5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5 5"></path>
+						</svg>
+					</button>
                 </div>
+				
                 <div class="glass-effect rounded-lg p-4">
                     <h3 class="sporty-font text-lg font-bold text-yellow-400 mb-2">MATCH HIGHLIGHTS</h3>
                     <div class="bg-black bg-opacity-50 rounded p-3 overflow-hidden">
@@ -115,7 +134,7 @@
                 <div class="glass-effect rounded-lg p-4 text-center">
                     <h4 class="sporty-font text-lg font-bold text-yellow-400 mb-2">PRIMARY SPONSOR</h4>
                     <div class="p-2 bg-black bg-opacity-20 rounded-lg">
-                        <img src="img/nlightn.png size=50%" alt="Sponsor Logo" class="mx-auto rounded-md opacity-75 hover:opacity-100 transition-opacity">
+                        <img src="img/nlightn.png" alt="Sponsor Logo" class="mx-auto rounded-md opacity-75 hover:opacity-100 transition-opacity">
                     </div>
                 </div>
                 <div class="glass-effect rounded-lg p-4 flex-grow flex flex-col">
@@ -129,8 +148,8 @@
                         <button onclick="resetTimer()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-red-400 hover:bg-red-600 hover:bg-opacity-30 transition-all">RESET</button>
                     </div>
                     <div class="grid grid-cols-2 gap-2 mb-4">
-                        <input type="number" id="minutes" placeholder="Min" min="0" max="99" class="bg-black bg-opacity-50 px-2 py-1 rounded text-white scoreboard-font text-center">
-                        <input type="number" id="seconds" placeholder="Sec" min="0" max="59" class="bg-black bg-opacity-50 px-2 py-1 rounded text-white scoreboard-font text-center">
+                        <input type="number" id="minutes" placeholder="Min" min="0" max="99" class="bg-black bg-opacity-50 px-2 py-1 rounded text-white scoreboard-font text-center" style="font-size:12px">
+                        <input type="number" id="seconds" placeholder="Sec" min="0" max="59" class="bg-black bg-opacity-50 px-2 py-1 rounded text-white scoreboard-font text-center" style="font-size:12px">
                     </div>
                     <button onclick="setTime()" class="w-full glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-400 hover:bg-cyan-600 hover:bg-opacity-30 transition-all">SET TIME</button>
                 </div>
@@ -170,9 +189,9 @@
                 <button onclick="showScoreboardSettings()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all text-sm">⚙️ SCOREBOARD</button>
                 <button onclick="showGameSettings()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-sm">🎮 GAME</button>
                 <button onclick="showFixtureSchedule()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-blue-400 hover:bg-blue-600 hover:bg-opacity-30 transition-all text-sm">📅 FIXTURE</button>
-                <button onclick="showRegisterLogin()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-pink-400 hover:bg-pink-600 hover:bg-opacity-30 transition-all text-sm">👤 LOGIN</button>
+                <button onclick="showRegisterLogin()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-pink-400 hover:bg-pink-600 hover:bg-opacity-30 transition-all text-sm">📊 STATS</button>
                 <button onclick="showSection('standings')" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-sm">🏆 STANDINGS</button>
-                <button onclick="showSection('stats')" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-sm">📊 STATS</button>
+                <button onclick="showUserAccessModal()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-sm">👤 LOGIN</button>
                 <button onclick="saveFixture()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all text-sm">💾 SAVE</button>
                 <button onclick="toggleFullscreen()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-purple-400 hover:bg-purple-600 hover:bg-opacity-30 transition-all text-sm">🖥️ FULLSCREEN</button>
             </div>
@@ -181,5 +200,4 @@
     <script src="js/script.js"></script>
 </body>
 </html>
-
 

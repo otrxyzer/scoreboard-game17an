@@ -1,11 +1,43 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
-.scoreboard-font {
-            font-family: 'Orbitron', monospace;
-        }
+@import url('https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+		.scoreboard-font {
+            font-family: 'Chivo Mono', monospace;
+			font-size: 8rem;
+			line-height: 1;
+			font-weight: 700;
+			color: #eb9e34;
+		}
+		.score-update-animation {
+    /* Nama animasi, durasi, tipe */
+			animation: scoreUpdateEffect 0.4s ease-out;
+		}
+
+		/* Keyframes yang menggabungkan perubahan ukuran, warna, dan bayangan neon */
+		@keyframes scoreUpdateEffect {
+			0% {
+				transform: scale(1);
+				color: #67e8f9; /* Warna awal (cyan) */
+				text-shadow: none;
+			}
+			50% {
+				transform: scale(1.25); /* Membesar */
+				color: #facc15; /* Berubah warna (kuning) */
+				text-shadow: 
+					0 0 10px #facc15,
+					0 0 20px #facc15; /* Bayangan neon bersinar */
+			}
+			100% {
+				transform: scale(1);
+				color: #67e8f9; /* Kembali normal */
+				text-shadow: none;
+			}
+		}
         
         .sporty-font {
             font-family: 'Rajdhani', sans-serif;
         }
+		.number-font {
+			font-size: 12px;
+		}
         
         .glass-effect {
             background: rgba(255, 255, 255, 0.1);
@@ -16,7 +48,10 @@
         .neon-glow {
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
         }
-        
+		.neon-pulse-animation {
+			animation: neonPulse 2s infinite ease-in-out;
+		}
+       
         .running-text {
             animation: scroll-left 20s linear infinite;
         }
@@ -27,7 +62,7 @@
         }
         
         .pulse-animation {
-            animation: pulse 2s infinite;
+            animation: pulse 3s infinite;
         }
         
         @keyframes pulse {
@@ -36,23 +71,45 @@
         }
         
         .gradient-bg {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #1e40af 100%);
-        }
+			background: linear-gradient(180deg, #1b4f2b 49%, #47634f 1%, #047857 50%);
+			transition: background .5s;
+		}
         
         .team-card {
-            background: linear-gradient(145deg, rgba(30, 58, 138, 0.8), rgba(55, 48, 163, 0.8));
+            background: linear-gradient(145deg, rgba(30, 58, 138, 0.8), rgba(0.8, 0.8, 0.8, 0.8));
             backdrop-filter: blur(15px);
             border: 2px solid rgba(0, 255, 255, 0.3);
         }
 
-	.score-display {
+		.score-display {
     	    background: linear-gradient(145deg, #0f172a, #1e293b);
     	    border: 3px solid #00ffff;
+			text-shadow: 0 0 15px rgba(110, 231, 183, 0.6); /* Efek glow sporty */
+			transition: all 0.2s ease-in-out; /* Transisi untuk efek neon */
             box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.3);
             transition: transform 0.2s ease-out;
             cursor: pointer; /* <-- DITAMBAHKAN: Memberi petunjuk visual bahwa area ini bisa diklik */
 	}
+``	/* Animasi baru untuk feedback skor */
+	.score-update-pulse {
+		/* Nama animasi, durasi, dan tipe animasi */
+		animation: scorePulse 0.3s ease-out;
+	}
 
+	@keyframes scorePulse {
+		0% {
+			transform: scale(1);
+			color: #67e8f9; /* Warna cyan-300 */
+		}
+		50% {
+			transform: scale(1.25); /* Membesar */
+			color: #facc15; /* Warna yellow-400 */
+		}
+		100% {
+			transform: scale(1);
+			color: #67e8f9; /* Kembali ke normal */
+		}
+	}
 	.score-display.swiping { /* Tetap ada untuk feedback visual saat disentuh */
     	    transform: scale(0.95);
             border-color: #f59e0b;
@@ -81,4 +138,57 @@
 	.slideshow-image.visible {
 		opacity: 1;
 }
-    </style>
+	/* Styling untuk Tombol Tutup Notifikasi */
+/* ========================================================== */
+/* == STYLING UNTUK JENDELA NOTIFIKASI == */
+/* ========================================================== */
+
+.notification {
+    /* Transisi & Posisi Awal */
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transform: translateY(20px);
+    opacity: 0;
+
+    /* Lebar Adaptif (Perbaikan) */
+    width: -moz-max-content; /* Untuk Firefox */
+    width: max-content;      /* Untuk browser modern */
+    max-width: 320px;        /* Batas lebar maksimal */
+}
+
+/* Kelas untuk memunculkan notifikasi */
+	.notification.show {
+		transform: translateY(0);
+		opacity: 1;
+	}
+
+/* Warna notifikasi berdasarkan tipe */
+	.notification.info {
+		background: rgba(0, 150, 255, 0.5);
+		border-left: 5px solid #0096ff;
+	}
+	.notification.success {
+		background: rgba(0, 200, 83, 0.5);
+		border-left: 5px solid #00c853;
+	}
+	.notification.error {
+		background: rgba(211, 47, 47, 0.5);
+		border-left: 5px solid #d32f2f;
+	}
+
+	/* Styling untuk Tombol Tutup Notifikasi */
+	.notification-close-btn {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		background: none;
+		border: none;
+		color: rgba(255, 255, 255, 0.7);
+		cursor: pointer;
+		padding: 0.25rem;
+		line-height: 1;
+	}
+
+	.notification-close-btn:hover {
+		color: white;
+	}
+

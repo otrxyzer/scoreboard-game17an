@@ -72,7 +72,7 @@
         }
         
         .gradient-bg {
-			background: linear-gradient(180deg, #1b4f2b 49%, #47634f 1%, #047857 50%);
+			background: linear-gradient(180deg, #1b4f2b 49%, #47634f 5%, #1b4f2b45%);
 			transition: background .5s;
 		}
         
@@ -192,4 +192,5 @@
 	.notification-close-btn:hover {
 		color: white;
 	}
+
 

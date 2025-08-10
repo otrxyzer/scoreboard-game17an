@@ -72,14 +72,14 @@
         }
         
         .gradient-bg {
-			background: linear-gradient(180deg, #1b4f2b 49%, #47634f 5%, #1b4f2b45%);
+			background: linear-gradient(180deg, #08401d 49%, #47634f 1%,#08401d 50%);
 			transition: background .5s;
 		}
         
         .team-card {
-            background: linear-gradient(145deg, rgba(30, 58, 138, 0.8), rgba(0.8, 0.8, 0.8, 0.8));
+            background: linear-gradient(180deg, rgba(240, 12, 27), rgba(245, 39, 145, 0));
             backdrop-filter: blur(15px);
-            border: 2px solid rgba(0, 255, 255, 0.3);
+            border: 1px solid rgba(0, 255, 255, 0.3);
         }
 
 		.score-display {
@@ -192,5 +192,4 @@
 	.notification-close-btn:hover {
 		color: white;
 	}
-
 

@@ -538,6 +538,10 @@ function toggleFocusMode() {
     window.showFixtureSchedule = () => {
         window.location.href = 'fixture-gen.html'; // Assuming this file exists for fixture generation
     };
+	// --- Tampilkan League Standings ---
+	window.showLeagueStandings = () => {
+		window.location.href = 'standing.html';
+	}
 
     // --- HELPER FUNCTION: FORMAT TIMESTAMP ---
     function formatTimestamp(isoString) {
@@ -636,18 +640,49 @@ function toggleFocusMode() {
         updateAllDisplays();
 
         // Render demo fixtures (placeholder for now)
-        const renderFixtures = () => {
-            document.getElementById('upcomingFixtures').innerHTML = `
-                <div class="bg-black bg-opacity-30 rounded p-3">
-                    <div class="flex justify-between items-center">
-                        <div class="sporty-font text-sm text-cyan-300">🇺🇸 ALPHA vs 🇨🇦 GAMMA</div>
-                        <div class="sporty-font text-xs text-yellow-400">LIVE</div>
-                    </div>
-                    <div class="sporty-font text-xs text-gray-400 mt-1">DEC 16 • 8:00 PM</div>
-                </div>
-            `;
-        };
+	function renderFixtures() {
+		// 1. Ambil kedua kontainer
+		const upcomingContainer = document.getElementById('upcomingFixturesContainer');
+		const resultsContainer = document.getElementById('currentResultsContainer');
+		
+		// 2. Ambil data dari localStorage
+		const fixtures = JSON.parse(localStorage.getItem('tournament_fixtures')) || [];
+		const teams = JSON.parse(localStorage.getItem('tournament_teams')) || [];
 
+		if (!upcomingContainer || !resultsContainer || fixtures.length === 0 || teams.length === 0) {
+			if (upcomingContainer) upcomingContainer.innerHTML = `<div class="sporty-font text-center text-gray-400 p-2">No upcoming matches.</div>`;
+			if (resultsContainer) resultsContainer.innerHTML = `<div class="sporty-font text-center text-gray-400 p-2">No results yet.</div>`;
+			return;
+		}
+		
+		// 3. Pisahkan data menjadi dua grup
+		const upcomingFixtures = fixtures.filter(f => f.status !== 'FINISHED');
+		const finishedFixtures = fixtures.filter(f => f.status === 'FINISHED');
+
+		// 4. Render data ke kontainer "Upcoming"
+		if (upcomingFixtures.length > 0) {
+			upcomingContainer.innerHTML = upcomingFixtures.map(fixture => {
+				const teamA = teams.find(t => t.id === fixture.teamAId);
+				const teamB = teams.find(t => t.id === fixture.teamBId);
+				if (!teamA || !teamB) return '';
+				return `<div class="bg-black bg-opacity-30 rounded p-2"><div class="flex justify-between items-center"><div class="sporty-font text-sm text-cyan-300">${teamA.flag} ${teamA.name} vs ${teamB.flag} ${teamB.name}</div><div class="sporty-font text-xs text-green-400">${fixture.status}</div></div></div>`;
+			}).join('');
+		} else {
+			upcomingContainer.innerHTML = `<div class="sporty-font text-center text-gray-400 p-2">All matches have been played.</div>`;
+		}
+
+		// 5. Render data ke kontainer "Results"
+		if (finishedFixtures.length > 0) {
+			resultsContainer.innerHTML = finishedFixtures.map(fixture => {
+				const teamA = teams.find(t => t.id === fixture.teamAId);
+				const teamB = teams.find(t => t.id === fixture.teamBId);
+				if (!teamA || !teamB) return '';
+				return `<div class="bg-black bg-opacity-30 rounded p-2"><div class="flex justify-between items-center"><div class="sporty-font text-sm text-cyan-300">${teamA.flag} ${teamA.name} vs ${teamB.flag} ${teamB.name}</div><div class="sporty-font text-xs font-bold text-yellow-400">${fixture.scoreA} - ${fixture.scoreB}</div></div></div>`;
+			}).join('');
+		} else {
+			resultsContainer.innerHTML = `<div class="sporty-font text-center text-gray-400 p-2">No results yet.</div>`;
+		}
+	}
         // Render demo league standings
         const renderStandings = () => {
             document.getElementById('leagueStandings').innerHTML = demoStandings.map(s => `

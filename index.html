@@ -162,10 +162,26 @@
             </div>
         </main>
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-            <div class="glass-effect rounded-lg p-4 flex flex-col">
-                <h3 class="sporty-font text-lg font-bold text-blue-400 mb-3 text-center">📅 UPCOMING FIXTURES</h3>
-                <div id="upcomingFixtures" class="space-y-2 flex-grow"></div>
-            </div>
+            <!-- Blok Fixtures BARU dengan Sistem Tab (Tanpa Tombol) -->
+			<div class="glass-effect rounded-lg p-4 flex flex-col gap-4">
+				
+				<!-- Tab Upcoming Fixtures -->
+				<div>
+					<h3 class="sporty-font text-lg font-bold text-cyan-400 mb-2">📅 Upcoming Fixtures</h3>
+					<div id="upcomingFixturesContainer" class="space-y-2 overflow-y-auto max-h-32 p-2 bg-black bg-opacity-20 rounded-md">
+						<!-- Data Upcoming akan dirender di sini -->
+					</div>
+				</div>
+
+				<!-- Tab Current Fixture Results -->
+				<div>
+					<h3 class="sporty-font text-lg font-bold text-yellow-400 mb-2">🏆 Current Results</h3>
+					<div id="currentResultsContainer" class="space-y-2 overflow-y-auto max-h-32 p-2 bg-black bg-opacity-20 rounded-md">
+						<!-- Data Results akan dirender di sini -->
+					</div>
+				</div>
+
+			</div>
             <div class="glass-effect rounded-lg p-4 flex flex-col">
                 <h3 class="sporty-font text-lg font-bold text-yellow-400 mb-3 text-center">🏆 LEAGUE STANDINGS</h3>
                 <div class="overflow-x-auto">
@@ -186,19 +202,18 @@
         </section>
         <footer class="glass-effect rounded-lg p-4 mt-4">
             <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-                <button onclick="showScoreboardSettings()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all text-sm">⚙️ SCOREBOARD</button>
-                <button onclick="showGameSettings()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-sm">🎮 GAME</button>
-                <button onclick="showFixtureSchedule()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-blue-400 hover:bg-blue-600 hover:bg-opacity-30 transition-all text-sm">📅 FIXTURE</button>
-                <button onclick="showRegisterLogin()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-pink-400 hover:bg-pink-600 hover:bg-opacity-30 transition-all text-sm">📊 STATS</button>
-                <button onclick="showSection('standings')" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-sm">🏆 STANDINGS</button>
-                <button onclick="showUserAccessModal()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-sm">👤 LOGIN</button>
-                <button onclick="saveFixture()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all text-sm">💾 SAVE</button>
-                <button onclick="toggleFullscreen()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-purple-400 hover:bg-purple-600 hover:bg-opacity-30 transition-all text-sm">🖥️ FULLSCREEN</button>
+                <button onclick="showScoreboardSettings()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-orange-400 hover:bg-orange-600 hover:bg-opacity-30 transition-all text-xs">⚙️ SCOREBOARD</button>
+                <button onclick="showGameSettings()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-xs">🎮 GAME</button>
+                <button onclick="showFixtureSchedule()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-blue-400 hover:bg-blue-600 hover:bg-opacity-30 transition-all text-xs">📅 FIXTURE</button>
+                <button onclick="showRegisterLogin()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-pink-400 hover:bg-pink-600 hover:bg-opacity-30 transition-all text-xs">📊 STATS</button>
+                <button onclick="showLeagueStandings()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-xs">🏆 STANDINGS</button>
+                <button onclick="showUserAccessModal()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-cyan-300 hover:bg-cyan-600 hover:bg-opacity-30 transition-all text-xs">👤 LOGIN</button>
+                <button onclick="saveFixture()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-green-400 hover:bg-green-600 hover:bg-opacity-30 transition-all text-xs">💾 SAVE</button>
+                <button onclick="toggleFullscreen()" class="glass-effect px-3 py-2 rounded sporty-font font-bold text-purple-400 hover:bg-purple-600 hover:bg-opacity-30 transition-all text-xs">🖥️ FULLSCREEN</button>
             </div>
         </footer>
     </div>
-    <script src="js/script.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>
-
 

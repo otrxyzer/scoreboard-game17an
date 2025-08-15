@@ -10,7 +10,7 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(180deg, #08401d 49%, #47634f 1%,#08401d 50%);
             min-height: 100vh;
         }
         
@@ -221,26 +221,61 @@
 
         <!-- Team Input Section -->
         <div class="glass-card rounded-2xl p-8 mb-8 animate-fade-in">
-            <h3 id="participantSectionTitle" class="text-2xl font-semibold text-white mb-6">Add Teams</h3>
-            <div class="flex gap-4 mb-6">
-                <input type="text" id="teamInput" placeholder="Enter team name" 
-                       class="flex-1 px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
-                <button onclick="addTeam()" id="addParticipantBtn" class="px-8 py-3 bg-white/20 hover:bg-white/30 rounded-xl text-white font-semibold transition-all duration-300">
-                    Add Team
-                </button>
-            </div>
-            
-            <!-- Teams List -->
-            <div id="teamsList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6"></div>
-            
-            <!-- Generate Button -->
-            <div class="text-center">
-                <button onclick="generateFixtures()" id="generateBtn" disabled 
-                        class="px-12 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 rounded-xl text-white font-bold text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Generate Fixtures
-                </button>
-            </div>
-        </div>
+			<h3 id="participantSectionTitle" class="text-2xl font-semibold text-white mb-6">Add Teams</h3>
+			<div class="flex gap-4 mb-6">
+				<input type="text" id="teamInput" placeholder="Enter team name" class="flex-1 px-4 py-3 rounded-xl glass-effect text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/30">
+				<button onclick="addTeam()" id="addParticipantBtn" class="px-8 py-3 bg-white/20 hover:bg-white/30 rounded-xl text-white font-semibold transition-all duration-300">Add Team</button>
+			</div>
+			
+			<div id="teamsList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
+				<div class="glass-effect rounded-lg p-3 flex items-center justify-between">
+					<span class="text-white font-medium">AB</span>
+					<button onclick="removeTeam('AB')" class="text-red-300 hover:text-red-200 ml-2">
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+						</svg>
+					</button>
+				</div>
+				
+				<div class="glass-effect rounded-lg p-3 flex items-center justify-between">
+					<span class="text-white font-medium">CD</span>
+					<button onclick="removeTeam('CD')" class="text-red-300 hover:text-red-200 ml-2">
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+						</svg>
+					</button>
+				</div>
+				
+				<div class="glass-effect rounded-lg p-3 flex items-center justify-between">
+					<span class="text-white font-medium">EF</span>
+					<button onclick="removeTeam('EF')" class="text-red-300 hover:text-red-200 ml-2">
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+						</svg>
+					</button>
+				</div>
+			</div>
+    
+    <div class="flex justify-center gap-4 mb-6">
+			<div id="leagueButtons" class="flex gap-4">
+				<button onclick="updateStanding()" class="px-8 py-3 bg-white/20 hover:bg-white/30 rounded-xl text-white font-semibold transition-all duration-300">
+					Update Standing
+				</button>
+				<button onclick="generateFixtures()" id="generateBtn" class="px-8 py-3 bg-green-500/20 hover:bg-green-500/30 rounded-xl text-white font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+					Generate Fixtures
+				</button>
+			</div>
+
+			<div id="tournamentButtons" class="flex gap-4 hidden">
+				<button onclick="generateTournamentBracket()" class="px-8 py-3 bg-white/20 hover:bg-white/30 rounded-xl text-white font-semibold transition-all duration-300">
+					Tournament Bracket
+				</button>
+				<button onclick="generateFixtures()" id="generateBtnTournament" class="px-8 py-3 bg-green-500/20 hover:bg-green-500/30 rounded-xl text-white font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+					Generate Tournament
+				</button>
+			</div>
+		</div>
+	</div>
 
         <!-- Fixtures Display -->
         <!-- Fixtures Display -->
@@ -304,13 +339,23 @@
         let customFieldCount = 0;
 
         function initializeMode(mode) {
-            currentMode = mode;
-            document.getElementById('homePage').classList.add('hidden');
-            document.getElementById('fixtureGenerator').classList.remove('hidden');
-            document.getElementById('modeTitle').textContent = mode === 'league' ? 'League Generator' : 'Tournament Generator';
-            resetGenerator();
-            updateClassificationUI();
-        }
+			currentMode = mode;
+			document.getElementById('homePage').classList.add('hidden');
+			document.getElementById('fixtureGenerator').classList.remove('hidden');
+			document.getElementById('modeTitle').textContent = mode === 'league' ? 'League Generator' : 'Tournament Generator';
+			
+			// Logika untuk menampilkan/menyembunyikan tombol
+			if (mode === 'league') {
+				document.getElementById('leagueButtons').classList.remove('hidden');
+				document.getElementById('tournamentButtons').classList.add('hidden');
+			} else {
+				document.getElementById('leagueButtons').classList.add('hidden');
+				document.getElementById('tournamentButtons').classList.remove('hidden');
+			}
+			
+			resetGenerator();
+			updateClassificationUI();
+		}
 
         function updateClassification() {
             const radios = document.querySelectorAll('input[name="classification"]');
@@ -519,26 +564,114 @@
             const minTeams = currentMode === 'league' ? 3 : 4;
             btn.disabled = teams.length < minTeams;
         }
+		// Variable untuk menyimpan skor poin per hasil pertandingan
+// Letakkan fungsi ini di dalam file JavaScript untuk fixture-gen.html
 
-        function generateFixtures() {
-			if (teams.length < 3) { // Butuh minimal 3 tim
-				alert("Please add at least 3 teams to generate fixtures.");
+		function updateStanding() {
+			// 1. Inisialisasi klasemen awal dengan data tim yang ada
+			const standings = {};
+			teams.forEach(team => {
+				standings[team] = {
+					pos: 0, // Posisi akan dihitung nanti
+					teamName: team,
+					flag: '⚽', // Anda bisa ganti dengan logo atau biarkan kosong
+					W: 0,
+					L: 0,
+					D: 0, // Tambahkan 'D' untuk Draw jika perlu
+					GF: 0,
+					GA: 0,
+					PTS: 0
+				};
+			});
+
+			// 2. Hitung statistik dari setiap pertandingan yang ada di 'fixtures'
+			fixtures.forEach(fixture => {
+				if (fixture.result) {
+					const [scoreHome, scoreAway] = fixture.result.split('-').map(Number);
+					if (!isNaN(scoreHome) && !isNaN(scoreAway)) {
+						// Update statistik gol
+						standings[fixture.homeTeam].GF += scoreHome;
+						standings[fixture.homeTeam].GA += scoreAway;
+						standings[fixture.awayTeam].GF += scoreAway;
+						standings[fixture.awayTeam].GA += scoreHome;
+
+						// Update Menang, Kalah, Seri, dan Poin
+						if (scoreHome > scoreAway) { // Home win
+							standings[fixture.homeTeam].W += 1;
+							standings[fixture.homeTeam].PTS += 3;
+							standings[fixture.awayTeam].L += 1;
+						} else if (scoreAway > scoreHome) { // Away win
+							standings[fixture.awayTeam].W += 1;
+							standings[fixture.awayTeam].PTS += 3;
+							standings[fixture.homeTeam].L += 1;
+						} else { // Draw
+							standings[fixture.homeTeam].D += 1;
+							standings[fixture.awayTeam].D += 1;
+							standings[fixture.homeTeam].PTS += 1;
+							standings[fixture.awayTeam].PTS += 1;
+						}
+					}
+				}
+			});
+
+			// 3. Ubah format data dan urutkan klasemen
+			const sortedStandings = Object.values(standings)
+				.sort((a, b) => {
+					// Urutkan berdasarkan Poin, lalu Selisih Gol, lalu Gol Masuk
+					if (b.PTS !== a.PTS) return b.PTS - a.PTS;
+					const gdA = a.GF - a.GA;
+					const gdB = b.GF - b.GA;
+					if (gdB !== gdA) return gdB - gdA;
+					return b.GF - a.GF;
+				})
+				.map((team, index) => {
+					team.pos = index + 1; // Atur posisi setelah diurutkan
+					return team;
+				});
+
+			// 4. (PENTING) Simpan data ke localStorage agar bisa dibaca oleh standing.html
+			// Kita gunakan kunci 'updateFixture' agar sesuai dengan standing.js Anda
+			localStorage.setItem('updateFixture', JSON.stringify(sortedStandings));
+
+			// 5. (PENTING) Arahkan pengguna ke halaman standing.html
+			window.location.href = 'leaguer.html';
+		}
+
+		function generateTournamentBracket() {
+			// Perbarui fungsi ini untuk memeriksa data di localStorage
+			const savedData = localStorage.getItem('tournamentBracketData');
+			if (!savedData || JSON.parse(savedData).length === 0) {
+				alert("Please generate tournament fixtures first.");
+				return;
+			}
+
+			// Arahkan pengguna ke halaman visualisasi bracket
+			window.location.href = 'tournament-bracket.html';
+		}
+		
+	    function generateFixtures() {
+			// Perbaikan: Ubah jumlah tim minimal menjadi 4 untuk turnamen bracket.
+			if (teams.length < 4) {
+				alert("Please add at least 4 teams to generate fixtures.");
 				return;
 			}
 
 			if (currentMode === 'league') {
 				generateLeagueFixtures();
+				// Logika standings untuk mode liga ada di sini
+				initializeStandings();
+				displayFixtures();
+				alert(`Fixtures and standings for ${teams.length} teams have been generated and saved!`);
 			} else {
+				// Logika khusus untuk mode turnamen
 				generateTournamentFixtures();
+				
+				// Perbaikan: Hapus logika standings yang tidak relevan untuk turnamen.
+				// Data turnamen sudah disimpan di generateTournamentFixtures() dengan kunci 'tournamentBracketData'
+				
+				displayFixtures();
+				alert(`Fixtures for a tournament with ${teams.length} teams have been generated and saved!`);
 			}
-
-			initializeStandings();
-			localStorage.setItem('tournament_teams', JSON.stringify(teams));
-			localStorage.setItem('tournament_fixtures', JSON.stringify(fixtures));
-			localStorage.setItem('tournament_standings', JSON.stringify(standings));
-			
-			displayFixtures();
-			alert(`Fixtures and standings for ${teams.length} teams have been generated and saved!`);
 		}
 
         function generateLeagueFixtures() {
@@ -561,35 +694,52 @@
         }
 
         function generateTournamentFixtures() {
-            fixtures = [];
-            let currentRound = [...teams].sort(() => Math.random() - 0.5);
-            let roundNumber = 1;
-            
-            while (currentRound.length > 1) {
-                const nextRound = [];
-                const roundName = getRoundName(currentRound.length);
-                
-                for (let i = 0; i < currentRound.length; i += 2) {
-                    if (i + 1 < currentRound.length) {
-                        const winner = `Winner of ${currentRound[i]} vs ${currentRound[i + 1]}`;
-                        fixtures.push({
-                            round: roundNumber,
-                            roundName: roundName,
-                            homeTeam: currentRound[i],
-                            awayTeam: currentRound[i + 1],
-                            date: getRandomDate(),
-                            time: getRandomTime()
-                        });
-                        nextRound.push(winner);
-                    } else {
-                        nextRound.push(currentRound[i]);
-                    }
-                }
-                
-                currentRound = nextRound;
-                roundNumber++;
-            }
-        }
+			fixtures = [];
+			let currentRoundTeams = [...teams].sort(() => Math.random() - 0.5);
+			let roundNumber = 1;
+
+			// Tambahan: Periksa apakah jumlah tim adalah pangkat 2
+			if (teams.length < 4 || (teams.length & (teams.length - 1)) !== 0) {
+				alert("Jumlah tim untuk turnamen harus 4, 8, 16, 32, dll. (pangkat 2) untuk bracket yang sempurna.");
+				return;
+			}
+
+			while (currentRoundTeams.length > 1) {
+				const roundName = getRoundName(currentRoundTeams.length);
+
+				for (let i = 0; i < currentRoundTeams.length; i += 2) {
+					const homeTeam = currentRoundTeams[i];
+					const awayTeam = currentRoundTeams[i + 1];
+
+					fixtures.push({
+						round: roundNumber,
+						roundName: roundName,
+						homeTeam: homeTeam,
+						awayTeam: awayTeam,
+						winner: null, // Tambahkan properti winner untuk diisi nanti
+						result: null, // Tambahkan properti result untuk diisi nanti
+					});
+				}
+				
+				// Buat placeholder untuk babak berikutnya, karena pemenangnya belum diketahui
+				currentRoundTeams = new Array(currentRoundTeams.length / 2).fill(null);
+				roundNumber++;
+			}
+
+			// PENTING: Simpan data jadwal turnamen yang sudah diperbarui ke localStorage
+			localStorage.setItem('tournamentBracketData', JSON.stringify(fixtures));
+			
+			// Setelah generate, arahkan langsung ke halaman bracket
+			window.location.href = 'tournament-bracket.html';
+		}
+
+		function getRoundName(teamsCount) {
+			if (teamsCount >= 16) return `Round of ${teamsCount}`;
+			if (teamsCount === 8) return 'Quarter Finals';
+			if (teamsCount === 4) return 'Semi Finals';
+			if (teamsCount === 2) return 'Final';
+			return `Round ${teamsCount}`;
+		}
 
         function getRoundName(teamsCount) {
             if (teamsCount >= 16) return 'Round of ' + teamsCount;
@@ -660,10 +810,11 @@
                                         <td class="px-6 py-4 text-white">${fixture.homeTeam} vs ${fixture.awayTeam}</td>
                                         <td class="px-6 py-4 text-white/80">${fixture.date}</td>
                                         <td class="px-6 py-4">
-                                            <input type="time" value="${fixture.time}" 
-                                                   onchange="updateFixtureTime(${fixture.round}, ${index}, this.value)"
-                                                   class="bg-transparent text-white border border-white/20 rounded px-2 py-1 text-sm focus:outline-none focus:border-white/50">
-                                        </td>
+											<input type="date"
+												   value="${fixture.date}"
+												   onchange="updateFixtureDate(${fixture.round}, ${index}, this.value)"
+												   class="bg-transparent text-white border border-white/20 rounded px-2 py-1 text-sm focus:outline-none focus:border-white/50">
+										</td>
                                         <td class="px-6 py-4">
                                             <input type="text" placeholder="0-0" value="${fixture.result || ''}"
                                                    onchange="updateFixtureResult(${fixture.round}, ${index}, this.value)"
@@ -722,19 +873,38 @@
             `).join('');
         }
 
-        function updateFixtureTime(round, index, newTime) {
-            const roundFixtures = fixtures.filter(f => f.round === round);
-            if (roundFixtures[index]) {
-                roundFixtures[index].time = newTime;
-            }
-        }
+        function updateFixtureResult(round, matchIndex, result) {
+			const match = fixtures.find(f => f.round === round && fixtures.indexOf(f) === matchIndex);
 
-        function updateFixtureResult(round, index, result) {
-            const roundFixtures = fixtures.filter(f => f.round === round);
-            if (roundFixtures[index]) {
-                roundFixtures[index].result = result;
-            }
-        }
+			if (match) {
+				match.result = result;
+				
+				if (result && result.includes('-')) {
+					const [scoreHome, scoreAway] = result.split('-').map(Number);
+					if (!isNaN(scoreHome) && !isNaN(scoreAway)) {
+						if (scoreHome > scoreAway) {
+							match.winner = match.homeTeam;
+						} else if (scoreAway > scoreHome) {
+							match.winner = match.awayTeam;
+						} else {
+							match.winner = null; 
+							alert("A knockout tournament match cannot end in a draw.");
+						}
+					}
+				}
+				
+				localStorage.setItem('tournamentBracketData', JSON.stringify(fixtures));
+			}
+		}
+
+		function updateFixtureTime(round, matchIndex, time) {
+			const match = fixtures.find(f => f.round === round && fixtures.indexOf(f) === matchIndex);
+
+			if (match) {
+				match.time = time;
+				localStorage.setItem('tournamentBracketData', JSON.stringify(fixtures));
+			}
+		}
 
         function showResults() {
             document.getElementById('fixtureGenerator').classList.add('hidden');
@@ -868,6 +1038,7 @@
                 </div>
             `).join('');
         }
+		
 
         function downloadResults() {
             const data = fixtures.map(f => ({

@@ -417,43 +417,59 @@ document.addEventListener('DOMContentLoaded', () => {
 	// --- MODAL USERS LOGIN/ SIGNUP
 	// Fungsi ini dipanggil oleh tombol "USERS"
 	window.showUserAccessModal = function() {
-		const modalHTML = `
-			<div class="glass-effect rounded-lg p-6 max-w-md w-full mx-4 relative"> <!-- Tambahkan 'relative' di sini -->
-				
-				<!-- Tombol Tutup X -->
-				<button onclick="closeModal()" class="absolute top-2 right-2 text-white/70 hover:text-white text-xl font-bold bg-transparent border-none cursor-pointer">
-					✖
-				</button>
+    const modalHTML = `
+        <div class="glass-effect rounded-lg p-6 max-w-md w-full mx-4 relative">
+            
+            <button onclick="closeModal()" class="absolute top-2 right-2 text-white/70 hover:text-white text-xl font-bold bg-transparent border-none cursor-pointer">
+                ✖
+            </button>
 
-				<div class="flex justify-between items-center mb-4">
-					<h2 class="sporty-font text-2xl font-bold text-pink-400">USER ACCESS</h2>
-					<div class="flex gap-2 rounded-lg p-1 glass-effect">
-						<button id="tab-login" class="fixture-tab active" onclick="switchAuthTab('login')">Login</button>
-						<button id="tab-signup" class="fixture-tab" onclick="switchAuthTab('signup')">Signup</button>
-					</div>
-				</div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="sporty-font text-2xl font-bold text-pink-400">USER ACCESS</h2>
+                <div class="flex gap-2 rounded-lg p-1 glass-effect">
+                    <button id="tab-login" class="fixture-tab active" onclick="switchAuthTab('login')">Login</button>
+                    <button id="tab-signup" class="fixture-tab" onclick="switchAuthTab('signup')">Signup</button>
+                </div>
+            </div>
 
-				<!-- Form Login -->
-				<div id="loginForm">
-					<div class="space-y-4">
-						<div><label class="sporty-font text-sm text-gray-300">Email</label><input type="email" placeholder="you@email.com" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div>
-						<div><label class="sporty-font text-sm text-gray-300">Password</label><input type="password" placeholder="••••••••" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div>
-					</div>
-					<button class="w-full mt-6 glass-effect p-3 rounded sporty-font font-bold text-green-400 hover:bg-green-600">LOGIN</button>
-				</div>
+            <div id="loginForm">
+                <div class="space-y-4">
+                    <div><label class="sporty-font text-sm text-gray-300">Email</label><input type="email" id="loginEmail" placeholder="you@email.com" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div>
+                    <div><label class="sporty-font text-sm text-gray-300">Password</label><input type="password" id="loginPassword" placeholder="••••••••" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div>
+                </div>
+                <button id="loginBtn" class="w-full mt-6 glass-effect p-3 rounded sporty-font font-bold text-green-400 hover:bg-green-600">LOGIN</button>
+            </div>
 
-				<!-- Form Signup (Tersembunyi) -->
-				<div id="signupForm" class="hidden">
-					<div class="space-y-4">
-						<div><label class="sporty-font text-sm text-gray-300">Username</label><input type="text" placeholder="Your Name" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div>
-						<div><label class="sporty-font text-sm text-gray-300">Email</label><input type="email" placeholder="you@email.com" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div>
-						<div><label class="sporty-font text-sm text-gray-300">Password</label><input type="password" placeholder="Create a password" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div>
-					</div>
-					<button class="w-full mt-6 glass-effect p-3 rounded sporty-font font-bold text-green-400 hover:bg-green-600">CREATE ACCOUNT</button>
-				</div>
-			</div>
-		`;
-		createModal(modalHTML);
+            <div id="signupForm" class="hidden">
+                <div class="space-y-4">
+                    <div><label class="sporty-font text-sm text-gray-300">Username</label><input type="text" id="signupUsername" placeholder="Your Name" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div>
+                    <div><label class="sporty-font text-sm text-gray-300">Email</label><input type="email" id="signupEmail" placeholder="you@email.com" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div>
+                    
+                    <div class="mt-4">
+                        <label class="sporty-font text-sm text-gray-300">Pilih Mode Layanan</label>
+                        <div class="flex gap-4 mt-2">
+                            <div class="flex items-center">
+                                <input type="radio" id="modeFree" name="serviceMode" value="free" class="form-radio text-green-500" checked>
+                                <label for="modeFree" class="ml-2 text-white sporty-font text-sm">Mode Free</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="modeAdmin" name="serviceMode" value="admin" class="form-radio text-yellow-500">
+                                <label for="modeAdmin" class="ml-2 text-white sporty-font text-sm">Mode Admin</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="modeEnterprise" name="serviceMode" value="enterprise" class="form-radio text-blue-500">
+                                <label for="modeEnterprise" class="ml-2 text-white sporty-font text-sm">Mode Enterprise</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div><label class="sporty-font text-sm text-gray-300">Password</label><input type="password" id="signupPassword" placeholder="Create a password" class="w-full bg-black bg-opacity-50 px-3 py-2 rounded text-white sporty-font"></div>
+                </div>
+                <button id="signupBtn" class="w-full mt-6 glass-effect p-3 rounded sporty-font font-bold text-green-400 hover:bg-green-600">CREATE ACCOUNT</button>
+            </div>
+        </div>
+    `;
+    createModal(modalHTML);
 	}
 
 	// Fungsi helper untuk beralih antara tab Login dan Signup

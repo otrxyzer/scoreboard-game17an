@@ -213,6 +213,93 @@
             </div>
         </footer>
     </div>
+<script>
+	window.showUserAccessModal = function() {
+    const modalHTML = `
+        `;
+    createModal(modalHTML);
+
+    // PENTING: Tambahkan kode ini setelah memanggil createModal()
+    // Ini akan menunggu modal dibuat di DOM, lalu menambahkan event listener.
+    document.getElementById('signupBtn').addEventListener('click', handleSignup);
+    document.getElementById('loginBtn').addEventListener('click', handleLogin);
+}
+
+// Fungsi terpisah untuk menangani proses signup
+	async function handleSignup() {
+		const username = document.getElementById('signupUsername').value;
+		const email = document.getElementById('signupEmail').value;
+		const password = document.getElementById('signupPassword').value;
+		const serviceMode = document.querySelector('input[name="serviceMode"]:checked').value;
+		
+		const userData = {
+			username: username,
+			email: email,
+			password: password,
+			serviceMode: serviceMode
+		};
+
+		try {
+			const response = await fetch('/api/signup', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(userData)
+			});
+			
+			const result = await response.json();
+			
+			if (response.ok) {
+				alert('Pendaftaran berhasil! Silakan login.');
+				document.getElementById('tab-login').click(); // Alihkan ke tab Login
+			} else {
+				alert(result.message || 'Pendaftaran gagal. Silakan coba lagi.');
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			alert('Terjadi kesalahan saat pendaftaran.');
+		}
+	}
+
+	// Fungsi terpisah untuk menangani proses login
+	async function handleLogin() {
+		const email = document.getElementById('loginEmail').value;
+		const password = document.getElementById('loginPassword').value;
+
+		const loginData = {
+			email: email,
+			password: password
+		};
+
+		try {
+			const response = await fetch('/api/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(loginData)
+			});
+
+			const result = await response.json();
+
+			if (response.ok) {
+				// Simpan token ke Local Storage
+				localStorage.setItem('userToken', result.token);
+				alert('Login berhasil! Selamat datang.');
+				closeModal(); // Tutup modal setelah login berhasil
+				// Arahkan ke halaman utama atau dashboard
+				// window.location.href = '/dashboard'; 
+			} else {
+				alert(result.message || 'Login gagal. Email atau password salah.');
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			alert('Terjadi kesalahan saat login.');
+		}
+	}
+</script>
+
 <script src="js/script.js"></script>
 </body>
 </html>
